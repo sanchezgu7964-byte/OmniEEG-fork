@@ -70,6 +70,21 @@
     "sha256": "b3df81e9572773d3c64fb42971cb268771317ed39665cb87a719913726f42633"
   },
   {
+    "file": "sources/codebrain.html",
+    "bytes": 774355,
+    "sha256": "25c3f02761b80ed7f2c7b26d1fb16ac50928e126fc24e39f3f01c91db0ecca04"
+  },
+  {
+    "file": "sources/codebrain.txt",
+    "bytes": 147376,
+    "sha256": "d62ee7f678e1f4b03fec6c5d0e463964cecfe8429f37b92fb5c05c83fd1eb17e"
+  },
+  {
+    "file": "sources/codebrain_readme.md",
+    "bytes": 1974,
+    "sha256": "8d0df192000cee042e2d443ebd2bee38bb17303ac3a88470288b8925d072485a"
+  },
+  {
     "file": "sources/csbrain.html",
     "bytes": 674124,
     "sha256": "01f7dce71ee4e7c82576a839c16508ef56cff90817196c7a0fdb40ab4342953d"

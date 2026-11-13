@@ -12,9 +12,10 @@
 - [UniMind](UniMind.md)：任务相关读出参照。
 - [ECHO](ECHO.md)：上下文适配参照。
 - [LaBraM](LaBraM.md)：必要强基线。
+- [CodeBrain](CodeBrain.md)：手册点名的复赛可用权重；双码本tokenizer与状态空间骨干。已对照官方代码。
 - [BIOT](BIOT.md)：频域及临床专长参照。
 - [BENDR](BENDR.md)：对比预测与临床基线。
 - [EEGNet](EEGNet.md)：必要监督基线。
 - [EEG Conformer](EEG_Conformer.md)：必要监督与局部时序参照。
 
-所有笔记当前为论文阅读初稿，代码级复现尚未完成；不同论文的阅读深度可以在正文状态中继续更新。
+除CodeBrain已对照官方代码阅读外，其余笔记当前为论文阅读初稿；所有笔记均未做代码级复现；不同论文的阅读深度可以在正文状态中继续更新。
