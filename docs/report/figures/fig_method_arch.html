@@ -2,16 +2,16 @@
 <html><head><meta charset="utf-8"><title>方法架构图</title>
 <style>
 :root{--keep:#2a78d6;--new:#eb6834;--obj:#1baf7a;--down:#6250d6;--txt:#0b0b0b;--txt2:#52514e;--line:#8a8983;--bg:#ffffff;}
-body{margin:0;background:var(--bg);font-family:"WenQuanYi Zen Hei",sans-serif;color:var(--txt);}
-#fig{position:relative;width:1500px;height:730px;background:var(--bg);}
+body{margin:0;background:var(--bg);font-family:"Inter","WenQuanYi Zen Hei",sans-serif;color:var(--txt);}
+#fig{position:relative;width:1500px;height:680px;background:var(--bg);}
 .t{position:absolute;left:24px;top:14px;font-size:22px;font-weight:bold}
 .st{position:absolute;left:24px;top:46px;font-size:13.5px;color:var(--txt2)}
-.box{position:absolute;border:2px solid var(--line);border-radius:8px;background:#fff;padding:7px 9px;font-size:13px;line-height:1.38;box-sizing:border-box}
+.box{position:absolute;border:1.25px solid #b9b8b2;border-radius:6px;background:#fff;padding:7px 9px;font-size:13px;line-height:1.38;box-sizing:border-box}
 .box b{font-size:13.5px}
-.keep{border-color:var(--keep)} .new{border-color:var(--new);border-style:dashed} .obj{border-color:var(--obj)} .down{border-color:var(--down)}
+.keep{border-color:var(--keep);background:#eef4fc!important} .new{border-color:var(--new);border-style:dashed;background:#fdf1ea!important} .obj{border-color:var(--obj);background:#e9f7f0!important} .down{border-color:var(--down);background:#f1effc!important}
 .tag{display:inline-block;font-size:11px;padding:0 5px;border-radius:3px;color:#fff;margin-left:4px;vertical-align:1px}
 .tk{background:var(--keep)} .tn{background:var(--new)} .to{background:#13855c} .td{background:var(--down)}
-.col{position:absolute;top:78px;font-size:14px;font-weight:bold;color:var(--txt2)}
+.col{position:absolute;top:30px;font-size:13px;font-weight:600;letter-spacing:.02em;color:#3a3936}
 .small{font-size:12px;color:var(--txt2)}
 .sub{position:absolute;height:26px;border-radius:5px;font-size:12.5px;color:#fff;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
 .grid{position:absolute;display:grid;gap:2px}
@@ -21,7 +21,7 @@ body{margin:0;background:var(--bg);font-family:"WenQuanYi Zen Hei",sans-serif;co
 svg{position:absolute;left:0;top:0}
 </style></head>
 <body><div id="fig">
-<div class="t" style="top:20px">本方案架构：在 REVE 上拼接“频段 × 尺度”的子空间结构</div>
+
 
 
 <div class="col" style="left:24px">① 输入</div>
@@ -31,74 +31,74 @@ svg{position:absolute;left:0;top:0}
 <div class="col" style="left:1190px">⑤ 预训练目标</div>
 
 <!-- ① 输入 -->
-<div class="box" style="left:24px;top:110px;width:180px;height:62px"><b>EEG</b><br>C × T，200 Hz</div>
-<div class="box" style="left:24px;top:232px;width:180px;height:62px"><b>导联名</b><br>→ 坐标 (x, y, z)</div>
+<div class="box" style="left:24px;top:62px;width:180px;height:62px"><b>EEG</b><br>C × T，200 Hz</div>
+<div class="box" style="left:24px;top:184px;width:180px;height:62px"><b>导联名</b><br>→ 坐标 (x, y, z)</div>
 
 <!-- ② patch -->
-<div class="box keep" style="left:236px;top:110px;width:270px;height:40px"><b>1 s patch</b><span class="tag tk">保留</span></div>
-<div class="box new" style="left:236px;top:186px;width:270px;height:58px"><b>0.5 / 0.25 s patch</b><span class="tag tn">新增</span><br>共享嵌入（列切片）</div>
-<div class="box keep" style="left:236px;top:268px;width:270px;height:58px"><b>4D 位置编码</b><span class="tag tk">保留</span><br>(x, y, z, t 秒)</div>
-<div class="box new" style="left:236px;top:338px;width:270px;height:40px"><b>尺度嵌入</b><span class="tag tn">新增</span></div>
+<div class="box keep" style="left:236px;top:62px;width:270px;height:40px"><b>1 s patch</b></div>
+<div class="box new" style="left:236px;top:138px;width:270px;height:58px"><b>0.5 / 0.25 s patch</b><br>共享嵌入（列切片）</div>
+<div class="box keep" style="left:236px;top:220px;width:270px;height:58px"><b>4D 位置编码</b><br>(x, y, z, t 秒)</div>
+<div class="box new" style="left:236px;top:290px;width:270px;height:40px"><b>尺度嵌入</b></div>
 
 <!-- ③ 编码器 -->
-<div class="box keep" style="left:540px;top:110px;width:320px;height:320px;background:#f6f9fe"></div>
-<div style="position:absolute;left:552px;top:116px;font-size:13.5px;font-weight:bold">REVE Transformer 编码器 ×22<span class="tag tk">保留</span></div>
-<div class="box keep" style="left:556px;top:160px;width:288px;height:40px"><b>尺度内注意力</b></div>
-<div class="box keep" style="left:556px;top:220px;width:288px;height:40px"><b>FFN</b></div>
-<div class="box new" style="left:556px;top:285px;width:288px;height:58px"><b>门控跨尺度注意力</b><span class="tag tn">新增</span><br>tanh(α)，α₀ = 0</div>
-<div class="box new" style="left:556px;top:375px;width:288px;height:40px"><b>聚合 → 2 s、4 s</b><span class="tag tn">新增</span></div>
+<div class="box" style="left:540px;top:62px;width:320px;height:320px;background:#f7f9fc;border-color:#c9d8ee"></div>
+<div style="position:absolute;left:552px;top:68px;font-size:13.5px;font-weight:bold">REVE Transformer 编码器 ×22</div>
+<div class="box keep" style="left:556px;top:112px;width:288px;height:40px"><b>尺度内注意力</b></div>
+<div class="box keep" style="left:556px;top:172px;width:288px;height:40px"><b>FFN</b></div>
+<div class="box new" style="left:556px;top:237px;width:288px;height:58px"><b>门控跨尺度注意力</b><br>tanh(α)，α₀ = 0</div>
+<div class="box new" style="left:556px;top:327px;width:288px;height:40px"><b>聚合 → 2 s、4 s</b></div>
 
 <!-- ④ 子空间 -->
-<div class="box" style="left:892px;top:110px;width:270px;height:320px;background:#fbfbfa"></div>
-<div style="position:absolute;left:904px;top:118px;font-size:13.5px;font-weight:bold">表示 z ∈ ℝ⁵¹² 的正交投影 P<sub>k</sub><span class="tag tn">新增</span></div>
-<div style="position:absolute;left:904px;top:146px;font-size:13px">锚定</div>
-<div class="sub" style="left:904px;top:166px;width:246px;background:#9ec5f4;color:#0b0b0b">δ 0.5–4 Hz</div>
-<div class="sub" style="left:904px;top:195px;width:246px;background:#6aa6ec;color:#0b0b0b">θ 4–8 Hz</div>
-<div class="sub" style="left:904px;top:224px;width:246px;background:#3f88e0">α 8–13 Hz</div>
-<div class="sub" style="left:904px;top:253px;width:246px;background:#2a6cc0">β 13–30 Hz</div>
-<div class="sub" style="left:904px;top:282px;width:246px;background:#1b4e93">γ 30–99.5 Hz</div>
-<div style="position:absolute;left:904px;top:314px;font-size:13px">自由</div>
-<div class="sub" style="left:904px;top:334px;width:59px;background:#8a8983">f₁</div>
-<div class="sub" style="left:966px;top:334px;width:59px;background:#8a8983">f₂</div>
-<div class="sub" style="left:1028px;top:334px;width:59px;background:#8a8983">f₃</div>
-<div class="sub" style="left:1090px;top:334px;width:60px;background:#8a8983">f₄</div>
-<div class="sub" style="left:904px;top:366px;width:246px;background:#e6e5e1;color:#52514e">剩余维度</div>
-<div style="position:absolute;left:904px;top:400px;font-size:12.5px;line-height:1.45">𝓛<sub>orth</sub>：P<sub>i</sub><sup>⊤</sup>P<sub>j</sub> = 0</div>
+<div class="box" style="left:892px;top:62px;width:270px;height:320px;background:#fbfbfa"></div>
+<div style="position:absolute;left:904px;top:70px;font-size:13.5px;font-weight:bold">表示 z ∈ ℝ⁵¹² 的正交投影 P<sub>k</sub></div>
+<div style="position:absolute;left:904px;top:98px;font-size:13px">锚定</div>
+<div class="sub" style="left:904px;top:118px;width:246px;background:#9ec5f4;color:#0b0b0b">δ 0.5–4 Hz</div>
+<div class="sub" style="left:904px;top:147px;width:246px;background:#6aa6ec;color:#0b0b0b">θ 4–8 Hz</div>
+<div class="sub" style="left:904px;top:176px;width:246px;background:#3f88e0">α 8–13 Hz</div>
+<div class="sub" style="left:904px;top:205px;width:246px;background:#2a6cc0">β 13–30 Hz</div>
+<div class="sub" style="left:904px;top:234px;width:246px;background:#1b4e93">γ 30–99.5 Hz</div>
+<div style="position:absolute;left:904px;top:266px;font-size:13px">自由</div>
+<div class="sub" style="left:904px;top:286px;width:59px;background:#8a8983">f₁</div>
+<div class="sub" style="left:966px;top:286px;width:59px;background:#8a8983">f₂</div>
+<div class="sub" style="left:1028px;top:286px;width:59px;background:#8a8983">f₃</div>
+<div class="sub" style="left:1090px;top:286px;width:60px;background:#8a8983">f₄</div>
+<div class="sub" style="left:904px;top:318px;width:246px;background:#e6e5e1;color:#52514e">剩余维度</div>
+<div style="position:absolute;left:904px;top:352px;font-size:12.5px;line-height:1.45">𝓛<sub>orth</sub>：P<sub>i</sub><sup>⊤</sup>P<sub>j</sub> = 0</div>
 
 <!-- ⑤ 目标 -->
-<div class="box obj" style="left:1190px;top:130px;width:286px;height:44px"><b>锚定 → 频段描述子</b><span class="tag to">𝓛<sub>desc</sub></span></div>
-<div class="box obj" style="left:1190px;top:250px;width:286px;height:60px"><b>自由 → 潜在预测</b><span class="tag to">𝓛<sub>latent</sub></span><br>EMA 教师</div>
-<div class="box obj" style="left:1190px;top:370px;width:286px;height:60px"><b>防遗忘</b><span class="tag to">𝓛<sub>keep</sub></span><br>蒸馏原版 REVE</div>
+<div class="box obj" style="left:1190px;top:82px;width:286px;height:44px"><b>锚定 → 频段描述子</b></div>
+<div class="box obj" style="left:1190px;top:202px;width:286px;height:60px"><b>自由 → 潜在预测</b><br>EMA 教师</div>
+<div class="box obj" style="left:1190px;top:322px;width:286px;height:60px"><b>防遗忘</b><br>蒸馏原版 REVE</div>
 
 <!-- 掩码 -->
-<div class="box keep" style="left:236px;top:390px;width:270px;height:40px;font-size:12.5px"><b>块状掩码</b><span class="tag tk">保留</span></div>
+<div class="box keep" style="left:236px;top:342px;width:270px;height:40px;font-size:12.5px"><b>块状掩码</b></div>
 
 <!-- 损失 -->
-<div class="box obj" style="left:892px;top:450px;width:584px;height:46px;font-size:14px;display:flex;align-items:center;justify-content:center"><span>𝓛 = Σ<sub>k∈频段</sub> 𝓛<sup>(k)</sup><sub>desc</sub> + λ<sub>f</sub> Σ<sub>j∈自由</sub> 𝓛<sup>(j)</sup><sub>latent</sub> + λ<sub>orth</sub> 𝓛<sub>orth</sub> + λ<sub>keep</sub> 𝓛<sub>keep</sub></span></div>
+<div class="box obj" style="left:892px;top:402px;width:584px;height:46px;font-size:14px;display:flex;align-items:center;justify-content:center"><span>𝓛 = Σ<sub>k∈频段</sub> 𝓛<sup>(k)</sup><sub>desc</sub> + λ<sub>f</sub> Σ<sub>j∈自由</sub> 𝓛<sup>(j)</sup><sub>latent</sub> + λ<sub>orth</sub> 𝓛<sub>orth</sub> + λ<sub>keep</sub> 𝓛<sub>keep</sub></span></div>
 
 <!-- 下游 -->
-<div class="col" style="left:24px;top:470px">⑥ 下游适配（每个数据集）</div>
-<div class="box down" style="left:24px;top:510px;width:1452px;height:172px;background:#f8f7fe"></div>
-<div class="box down" style="left:44px;top:526px;width:300px;height:140px"><b>按任务选 patch 组合</b><br><br><b>先探测，后微调</b></div>
-<div class="box down" style="left:380px;top:526px;width:560px;height:140px"><b>任务门控：子空间 × 尺度（示意）</b><span class="tag td">新增</span></div>
-<div class="grid" id="gate" style="left:620px;top:556px;grid-template-columns:repeat(5,26px)"></div>
-<div style="position:absolute;left:502px;top:556px;font-size:11.5px;color:var(--txt2);line-height:20px;text-align:right;width:110px">δ<br>θ<br>α<br>β<br>γ</div>
-<div style="position:absolute;left:620px;top:648px;font-size:11px;color:var(--txt2);width:150px;display:flex;gap:2px"><span style="width:26px;text-align:center">.25</span><span style="width:26px;text-align:center">.5</span><span style="width:26px;text-align:center">1</span><span style="width:26px;text-align:center">2</span><span style="width:26px;text-align:center">4 s</span></div>
-<div style="position:absolute;left:700px;top:706px;width:230px;font-size:12.5px;line-height:1.45;color:var(--txt2)"></div>
-<div class="box down" style="left:976px;top:526px;width:480px;height:140px"><b>分类头</b><br>读出方式按验证集 BACC 选</div>
+<div class="col" style="left:24px;top:428px">⑥ 下游适配（每个数据集）</div>
+<div class="box" style="left:24px;top:462px;width:1452px;height:172px;background:#faf9fe;border-color:#d9d4f4"></div>
+<div class="box down" style="left:44px;top:478px;width:300px;height:140px"><b>按任务选 patch 组合</b><br><br><b>先探测，后微调</b></div>
+<div class="box down" style="left:380px;top:478px;width:560px;height:140px"><b>任务门控：子空间 × 尺度（示意）</b></div>
+<div class="grid" id="gate" style="left:620px;top:508px;grid-template-columns:repeat(5,26px)"></div>
+<div style="position:absolute;left:502px;top:508px;font-size:11.5px;color:var(--txt2);line-height:20px;text-align:right;width:110px">δ<br>θ<br>α<br>β<br>γ</div>
+<div style="position:absolute;left:620px;top:600px;font-size:11px;color:var(--txt2);width:150px;display:flex;gap:2px"><span style="width:26px;text-align:center">.25</span><span style="width:26px;text-align:center">.5</span><span style="width:26px;text-align:center">1</span><span style="width:26px;text-align:center">2</span><span style="width:26px;text-align:center">4 s</span></div>
+<div style="position:absolute;left:700px;top:658px;width:230px;font-size:12.5px;line-height:1.45;color:var(--txt2)"></div>
+<div class="box down" style="left:976px;top:478px;width:480px;height:140px"><b>分类头</b><br>读出方式按验证集 BACC 选</div>
 
 <div class="legend"><span><i class="lg" style="border-color:var(--keep)"></i>保留 REVE 权重</span><span><i class="lg" style="border-color:var(--new);border-style:dashed"></i>新增（零初始化 / 门控）</span><span><i class="lg" style="border-color:var(--obj)"></i>预训练目标</span><span><i class="lg" style="border-color:var(--down)"></i>下游适配</span></div>
 
-<svg width="1500" height="730">
- <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a8983"/></marker></defs>
- <g stroke="#8a8983" stroke-width="2" fill="none" marker-end="url(#a)">
-  <path d="M204,135 L234,130"/><path d="M204,150 L234,212"/>
-  <path d="M204,265 L234,295"/>
-  <path d="M506,130 L538,180"/><path d="M506,215 L538,215"/><path d="M506,297 L538,262"/><path d="M506,358 L538,320"/>
-  <path d="M860,285 L890,285"/>
-  <path d="M1162,240 L1188,155"/><path d="M1162,347 L1188,282"/><path d="M1162,300 L1188,398"/>
-  <path d="M1020,430 L1020,448"/>
-  <path d="M700,430 L700,526"/>
+<svg width="1500" height="680">
+ <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,-48 L10,-43 L0,-38 z" fill="#6b6a65"/></marker></defs>
+ <g stroke="#6b6a65" stroke-width="1.4" fill="none" marker-end="url(#a)">
+  <path d="M204,87 L234,82"/><path d="M204,102 L234,164"/>
+  <path d="M204,217 L234,247"/>
+  <path d="M506,82 L538,132"/><path d="M506,167 L538,167"/><path d="M506,249 L538,214"/><path d="M506,310 L538,272"/>
+  <path d="M860,237 L890,237"/>
+  <path d="M1162,192 L1188,107"/><path d="M1162,299 L1188,234"/><path d="M1162,252 L1188,350"/>
+  <path d="M1020,382 L1020,400"/>
+  <path d="M700,382 L700,478"/>
  </g>
 </svg>
 </div>
