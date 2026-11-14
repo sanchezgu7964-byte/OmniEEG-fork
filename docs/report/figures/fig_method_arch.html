@@ -1,0 +1,111 @@
+<!doctype html>
+<html><head><meta charset="utf-8"><title>方法架构图</title>
+<style>
+:root{--keep:#2a78d6;--new:#eb6834;--obj:#1baf7a;--down:#6250d6;--txt:#0b0b0b;--txt2:#52514e;--line:#8a8983;--bg:#ffffff;}
+body{margin:0;background:var(--bg);font-family:"WenQuanYi Zen Hei",sans-serif;color:var(--txt);}
+#fig{position:relative;width:1500px;height:900px;background:var(--bg);}
+.t{position:absolute;left:24px;top:14px;font-size:22px;font-weight:bold}
+.st{position:absolute;left:24px;top:46px;font-size:13.5px;color:var(--txt2)}
+.box{position:absolute;border:2px solid var(--line);border-radius:8px;background:#fff;padding:7px 9px;font-size:13px;line-height:1.38;box-sizing:border-box}
+.box b{font-size:13.5px}
+.keep{border-color:var(--keep)} .new{border-color:var(--new);border-style:dashed} .obj{border-color:var(--obj)} .down{border-color:var(--down)}
+.tag{display:inline-block;font-size:11px;padding:0 5px;border-radius:3px;color:#fff;margin-left:4px;vertical-align:1px}
+.tk{background:var(--keep)} .tn{background:var(--new)} .to{background:#13855c} .td{background:var(--down)}
+.col{position:absolute;top:78px;font-size:14px;font-weight:bold;color:var(--txt2)}
+.small{font-size:12px;color:var(--txt2)}
+.sub{position:absolute;height:26px;border-radius:5px;font-size:12.5px;color:#fff;display:flex;align-items:center;justify-content:center;box-sizing:border-box}
+.grid{position:absolute;display:grid;gap:2px}
+.cell{width:26px;height:18px;border-radius:2px}
+.legend{position:absolute;left:24px;bottom:16px;font-size:13px;color:var(--txt2);display:flex;gap:22px;align-items:center}
+.lg{display:inline-block;width:26px;height:14px;border:2px solid;border-radius:4px;vertical-align:-3px;margin-right:6px}
+svg{position:absolute;left:0;top:0}
+</style></head>
+<body><div id="fig">
+<div class="t">本方案架构：在 REVE 上拼接“频段 × 尺度”的子空间结构</div>
+<div class="st">实线蓝框 = 保留 REVE 公开权重；橙色虚线框 = 新增模块（零初始化或门控初值为 0，第 0 步等于原版 REVE）；绿框 = 仅预训练使用的目标；紫框 = 下游适配</div>
+
+<div class="col" style="left:24px">① 输入</div>
+<div class="col" style="left:236px">② 多长度 patch 与位置</div>
+<div class="col" style="left:540px">③ 编码器（22 层）</div>
+<div class="col" style="left:900px">④ 混合正交子空间</div>
+<div class="col" style="left:1190px">⑤ 预训练目标</div>
+
+<!-- ① 输入 -->
+<div class="box" style="left:24px;top:110px;width:180px;height:92px"><b>EEG 信号</b><br>C 个通道 × T 点<br>200 Hz，1–30 s<br><span class="small">4–128 通道</span></div>
+<div class="box" style="left:24px;top:232px;width:180px;height:112px"><b>标准导联名</b><br>→ MNE 标准 montage<br>→ 三维坐标 (x, y, z)<br><span class="small">训练时加 0.25 cm 坐标噪声</span></div>
+
+<!-- ② patch -->
+<div class="box keep" style="left:236px;top:110px;width:270px;height:66px"><b>1 s patch</b><span class="tag tk">保留</span><br>步长 0.9 s，Linear 200→512</div>
+<div class="box new" style="left:236px;top:186px;width:270px;height:66px"><b>0.5 s / 0.25 s patch</b><span class="tag tn">新增</span><br>用同一嵌入矩阵 W 的列切片<br><span class="small">采样率不变 → 频率语义不变</span></div>
+<div class="box keep" style="left:236px;top:268px;width:270px;height:76px"><b>4D Fourier 位置编码 + MLP</b><span class="tag tk">保留</span><br>(x, y, z, t)，t 改为按秒计的连续时间</div>
+<div class="box new" style="left:236px;top:354px;width:270px;height:50px"><b>尺度嵌入 e(s)</b><span class="tag tn">新增</span><br><span class="small">标明 token 的观察范围，零初始化</span></div>
+
+<!-- ③ 编码器 -->
+<div class="box keep" style="left:540px;top:110px;width:320px;height:350px;background:#f6f9fe"></div>
+<div style="position:absolute;left:552px;top:116px;font-size:13.5px;font-weight:bold">REVE Transformer 编码器 ×22<span class="tag tk">保留</span></div>
+<div class="box keep" style="left:556px;top:146px;width:288px;height:74px"><b>尺度内注意力</b><br>1 s：REVE 原全注意力（跨通道、跨时间）<br>短尺度：同通道局部时间窗</div>
+<div class="box keep" style="left:556px;top:230px;width:288px;height:44px"><b>FFN（GEGLU）+ RMSNorm</b></div>
+<div class="box new" style="left:556px;top:286px;width:288px;height:88px"><b>门控跨尺度注意力</b><span class="tag tn">每 k 层插入</span><br>同通道、时间重叠的 0.25/0.5/1 s token 互相注意<br>输出 × tanh(α)，α 初值 0</div>
+<div class="box new" style="left:556px;top:386px;width:288px;height:62px"><b>时间聚合 → 2 s、4 s 尺度</b><span class="tag tn">新增</span><br><span class="small">在潜在 token 上聚合，不是对波形低通</span></div>
+
+<!-- ④ 子空间 -->
+<div class="box" style="left:892px;top:110px;width:270px;height:350px;background:#fbfbfa"></div>
+<div style="position:absolute;left:904px;top:118px;font-size:13.5px;font-weight:bold">表示 z ∈ ℝ⁵¹² 的正交投影 P<sub>k</sub><span class="tag tn">新增</span></div>
+<div style="position:absolute;left:904px;top:146px;font-size:12.5px;color:var(--txt2)">锚定子空间（各 48 维）</div>
+<div class="sub" style="left:904px;top:166px;width:246px;background:#9ec5f4;color:#0b0b0b">δ 0.5–4 Hz</div>
+<div class="sub" style="left:904px;top:195px;width:246px;background:#6aa6ec;color:#0b0b0b">θ 4–8 Hz</div>
+<div class="sub" style="left:904px;top:224px;width:246px;background:#3f88e0">α 8–13 Hz</div>
+<div class="sub" style="left:904px;top:253px;width:246px;background:#2a6cc0">β 13–30 Hz</div>
+<div class="sub" style="left:904px;top:282px;width:246px;background:#1b4e93">γ 30–99.5 Hz</div>
+<div style="position:absolute;left:904px;top:314px;font-size:12.5px;color:var(--txt2)">自由子空间（4 × 48 维，含义不预设）</div>
+<div class="sub" style="left:904px;top:334px;width:59px;background:#8a8983">f₁</div>
+<div class="sub" style="left:966px;top:334px;width:59px;background:#8a8983">f₂</div>
+<div class="sub" style="left:1028px;top:334px;width:59px;background:#8a8983">f₃</div>
+<div class="sub" style="left:1090px;top:334px;width:60px;background:#8a8983">f₄</div>
+<div class="sub" style="left:904px;top:366px;width:246px;background:#e6e5e1;color:#52514e">剩余 80 维（不约束，保留跨频段关联）</div>
+<div style="position:absolute;left:904px;top:400px;font-size:12.5px;line-height:1.45">𝓛<sub>orth</sub> = Σ‖P<sub>k</sub><sup>⊤</sup>P<sub>k</sub> − I‖² + Σ‖P<sub>i</sub><sup>⊤</sup>P<sub>j</sub>‖²<br><span class="small">只约束几何关系；含义由监督目标决定</span></div>
+
+<!-- ⑤ 目标 -->
+<div class="box obj" style="left:1190px;top:110px;width:286px;height:120px"><b>锚定：频段描述子预测</b><span class="tag to">𝓛<sub>desc</sub></span><br>预测被遮 token 的按频段标准化对数功率（FAME 式）；扩展为 Neuro-KE 式描述子<br><span class="small">只在窗长足以容纳该频段时计算</span></div>
+<div class="box obj" style="left:1190px;top:242px;width:286px;height:104px"><b>自由：潜在预测（JEPA 式）</b><span class="tag to">𝓛<sub>latent</sub></span><br>预测 EMA 教师（REVE 初始化）表示在 f<sub>j</sub> 上的投影；方差项 / SIGReg 防坍缩</div>
+<div class="box obj" style="left:1190px;top:358px;width:286px;height:102px"><b>防遗忘</b><span class="tag to">𝓛<sub>keep</sub></span><br>对冻结的原版 REVE 做特征蒸馏<br><span class="small">（公开权重无 decoder；决赛从零训练时换成 L1 波形重建）</span></div>
+
+<!-- 掩码 -->
+<div class="box keep" style="left:236px;top:420px;width:270px;height:40px;font-size:12.5px"><b>块状掩码 55%</b><span class="tag tk">保留</span> 仅预训练</div>
+
+<!-- 损失 -->
+<div class="box obj" style="left:892px;top:486px;width:584px;height:46px;font-size:14px;display:flex;align-items:center;justify-content:center"><span>𝓛 = Σ<sub>k∈频段</sub> 𝓛<sup>(k)</sup><sub>desc</sub> + λ<sub>f</sub> Σ<sub>j∈自由</sub> 𝓛<sup>(j)</sup><sub>latent</sub> + λ<sub>orth</sub> 𝓛<sub>orth</sub> + λ<sub>keep</sub> 𝓛<sub>keep</sub></span></div>
+
+<!-- 下游 -->
+<div class="col" style="left:24px;top:560px">⑥ 下游适配（每个数据集）</div>
+<div class="box down" style="left:24px;top:592px;width:1452px;height:236px;background:#f8f7fe"></div>
+<div class="box down" style="left:44px;top:612px;width:300px;height:196px"><b>输入组合按任务选择</b><span class="tag td">验证集 BACC</span><br>patch 长度：如 SSVEP 用 1 + 0.25 s，<br>睡眠分期只用 1 s 及更长尺度<br><br><b>两段式</b>：先冻结编码器训练门控与头，<br>再全量微调或 LoRA（沿用 REVE 流程）</div>
+<div class="box down" style="left:380px;top:612px;width:560px;height:196px"><b>任务门控 g ∈ ℝ<sup>K×S</sup></b><span class="tag td">新增</span><br>对“子空间 × 尺度”的表示做 softmax 加权；权重可直接报告<br><span class="small">示意：某 SSVEP 数据集可能的门控（颜色越深权重越大，非实验结果）</span></div>
+<div class="grid" id="gate" style="left:520px;top:700px;grid-template-columns:repeat(5,26px)"></div>
+<div style="position:absolute;left:402px;top:700px;font-size:11.5px;color:var(--txt2);line-height:20px;text-align:right;width:110px">δ<br>θ<br>α<br>β<br>γ</div>
+<div style="position:absolute;left:520px;top:802px;font-size:11px;color:var(--txt2);width:150px;display:flex;gap:2px"><span style="width:26px;text-align:center">.25</span><span style="width:26px;text-align:center">.5</span><span style="width:26px;text-align:center">1</span><span style="width:26px;text-align:center">2</span><span style="width:26px;text-align:center">4 s</span></div>
+<div style="position:absolute;left:700px;top:706px;width:230px;font-size:12.5px;line-height:1.45;color:var(--txt2)">自由子空间 f₁–f₄ 同样有门控权重。<br>门控权重用于检验 RQ3：<br>SSVEP 是否偏高频、短尺度；<br>睡眠是否偏低频、长尺度。</div>
+<div class="box down" style="left:976px;top:612px;width:480px;height:196px"><b>分类头与读出</b><br>池化 / 不池化 / MLP，按验证集 BACC 选择<br><br><b>评测协议</b>：被试 8:1:1 隔离，3 个固定种子，<br>验证集 BACC 选权重；报告 BACC、PR-AUC、ROC-AUC、F1<br><br><span class="small">诊断（第 0 步）也在这里做：同一冻结表示比较线性、PCA、多项式、MLP 读出，区分表征瓶颈与读出瓶颈</span></div>
+
+<div class="legend"><span><i class="lg" style="border-color:var(--keep)"></i>保留 REVE 权重</span><span><i class="lg" style="border-color:var(--new);border-style:dashed"></i>新增（零初始化 / 门控）</span><span><i class="lg" style="border-color:var(--obj)"></i>预训练目标</span><span><i class="lg" style="border-color:var(--down)"></i>下游适配</span></div>
+
+<svg width="1500" height="900">
+ <defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a8983"/></marker></defs>
+ <g stroke="#8a8983" stroke-width="2" fill="none" marker-end="url(#a)">
+  <path d="M204,150 L234,150"/><path d="M204,220 L234,220"/>
+  <path d="M204,290 L234,300"/>
+  <path d="M506,145 L538,180"/><path d="M506,220 L538,220"/><path d="M506,305 L538,260"/><path d="M506,378 L538,330"/>
+  <path d="M860,285 L890,285"/>
+  <path d="M1162,240 L1188,180"/><path d="M1162,347 L1188,300"/><path d="M1162,300 L1188,400"/>
+  <path d="M1020,460 L1020,484"/>
+  <path d="M700,460 L700,598"/>
+ </g>
+</svg>
+</div>
+<script>
+const w=[[.02,.03,.05,.04,.03],[.03,.04,.05,.04,.03],[.06,.08,.10,.05,.03],[.10,.14,.12,.05,.02],[.30,.25,.12,.03,.01]];
+const g=document.getElementById('gate');const mx=.30;
+for(const r of w)for(const v of r){const d=document.createElement('div');d.className='cell';const t=v/mx;
+d.style.background=`rgb(${Math.round(240-t*(240-98))},${Math.round(239-t*(239-80))},${Math.round(250-t*(250-214))})`;g.appendChild(d);}
+</script>
+</body></html>

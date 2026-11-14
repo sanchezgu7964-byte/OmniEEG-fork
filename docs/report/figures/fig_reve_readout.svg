@@ -1,0 +1,69 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="488" viewBox="0 0 760 488"><rect width="100%" height="100%" fill="#ffffff"/><text x="20.0" y="28.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="bold" font-family="WenQuanYi Zen Hei, sans-serif">REVE-Base 冻结表示：池化读出与不池化读出</text>
+<text x="20.0" y="48.0" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">线性探测，平衡准确率（%）。同一表示，只换读出方式。来源：REVE（arXiv 2510.21585）Table 4</text>
+<rect x="20.0" y="60.0" width="12.0" height="12.0" rx="2" fill="#2a78d6"/>
+<text x="38.0" y="70.5" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">池化（pooled）</text>
+<rect x="170.0" y="60.0" width="12.0" height="12.0" rx="2" fill="#eb6834"/>
+<text x="188.0" y="70.5" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">不池化（全部 token 展平）</text>
+<line x1="130.0" y1="86.0" x2="130.0" y2="432.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="130.0" y="447.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">0%</text>
+<line x1="242.0" y1="86.0" x2="242.0" y2="432.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="242.0" y="447.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">20%</text>
+<line x1="354.0" y1="86.0" x2="354.0" y2="432.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="354.0" y="447.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">40%</text>
+<line x1="466.0" y1="86.0" x2="466.0" y2="432.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="466.0" y="447.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">60%</text>
+<line x1="578.0" y1="86.0" x2="578.0" y2="432.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="578.0" y="447.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">80%</text>
+<line x1="690.0" y1="86.0" x2="690.0" y2="432.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="690.0" y="447.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">100%</text>
+<text x="120.0" y="109.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">Faced</text>
+<rect x="130.0" y="96.0" width="134.4" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="269.4" y="105.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">24.0</text>
+<rect x="130.0" y="109.0" width="236.3" height="11.0" rx="2" fill="#eb6834"/>
+<text x="371.3" y="118.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">42.2</text>
+<text x="120.0" y="143.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">BCIC2020-3</text>
+<rect x="130.0" y="130.0" width="131.0" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="266.0" y="139.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">23.4</text>
+<rect x="130.0" y="143.0" width="218.4" height="11.0" rx="2" fill="#eb6834"/>
+<text x="353.4" y="152.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">39.0</text>
+<text x="120.0" y="177.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">BCIC-IV-2a</text>
+<rect x="130.0" y="164.0" width="241.9" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="376.9" y="173.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">43.2</text>
+<rect x="130.0" y="177.0" width="289.5" height="11.0" rx="2" fill="#eb6834"/>
+<text x="424.5" y="186.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">51.7</text>
+<text x="120.0" y="211.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">TUEV</text>
+<rect x="130.0" y="198.0" width="331.5" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="466.5" y="207.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">59.2</text>
+<rect x="130.0" y="211.0" width="284.5" height="11.0" rx="2" fill="#eb6834"/>
+<text x="419.5" y="220.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">50.8</text>
+<text x="120.0" y="245.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">HMC</text>
+<rect x="130.0" y="232.0" width="362.3" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="497.3" y="241.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">64.7</text>
+<rect x="130.0" y="245.0" width="338.2" height="11.0" rx="2" fill="#eb6834"/>
+<text x="473.2" y="254.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">60.4</text>
+<text x="120.0" y="279.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">ISRUC</text>
+<rect x="130.0" y="266.0" width="390.3" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="525.3" y="275.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">69.7</text>
+<rect x="130.0" y="279.0" width="370.7" height="11.0" rx="2" fill="#eb6834"/>
+<text x="505.7" y="288.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">66.2</text>
+<text x="120.0" y="313.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">PhysioNetMI</text>
+<rect x="130.0" y="300.0" width="300.7" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="435.7" y="309.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">53.7</text>
+<rect x="130.0" y="313.0" width="285.6" height="11.0" rx="2" fill="#eb6834"/>
+<text x="420.6" y="322.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">51.0</text>
+<text x="120.0" y="347.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">Mumtaz</text>
+<rect x="130.0" y="334.0" width="538.7" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="673.7" y="343.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">96.2</text>
+<rect x="130.0" y="347.0" width="521.4" height="11.0" rx="2" fill="#eb6834"/>
+<text x="656.4" y="356.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">93.1</text>
+<text x="120.0" y="381.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">M. Arithmetic</text>
+<rect x="130.0" y="368.0" width="406.0" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="541.0" y="377.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">72.5</text>
+<rect x="130.0" y="381.0" width="414.4" height="11.0" rx="2" fill="#eb6834"/>
+<text x="549.4" y="390.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">74.0</text>
+<text x="120.0" y="415.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">TUAB</text>
+<rect x="130.0" y="402.0" width="453.6" height="11.0" rx="2" fill="#2a78d6"/>
+<text x="588.6" y="411.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">81.0</text>
+<rect x="130.0" y="415.0" width="453.0" height="11.0" rx="2" fill="#eb6834"/>
+<text x="588.0" y="424.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">80.9</text>
+<text x="20.0" y="470.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">注：FACED 上不池化高 18 个百分点，TUEV 上反而低 8 个百分点——读出方式本身就能大幅改变结论。</text></svg>

@@ -13,7 +13,7 @@ tmp = pathlib.Path(tempfile.mkdtemp())
 (tmp / "in.md").write_text(md, encoding="utf-8")
 html = tmp / "out.html"
 subprocess.run(["pandoc", str(tmp / "in.md"), "-s", "--mathml", "--lua-filter", str(here / "mermaid.lua"),
-                "--css", str(here / "style.css"), "--embed-resources", "--metadata", "title= ",
+                "--css", str(here / "style.css"), "--resource-path", str(pathlib.Path(src).resolve().parent), "--embed-resources", "--metadata", "title= ",
                 "-o", str(html)], check=True)
 h = html.read_text(encoding="utf-8")
 h = h.replace("</body>", f"<script>{pathlib.Path(mjs).read_text(encoding='utf-8')}</script>"
