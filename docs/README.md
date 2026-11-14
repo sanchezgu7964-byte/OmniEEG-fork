@@ -17,6 +17,7 @@
 ## 比赛与研究
 
 - [赛题与提交要求](competition/赛题与提交要求.md)
+- [初赛报告模块结构](competition/报告模块结构.md)
 - [待确认事项](competition/待确认事项.md)
 
 ## 流程

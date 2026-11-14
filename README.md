@@ -5,6 +5,7 @@
 - [论文笔记](docs/papers/README.md)
 - [架构与训练目标比较](docs/reviews/架构与训练目标比较.md)
 - [赛题与提交要求](docs/competition/赛题与提交要求.md)
+- [初赛报告模块结构](docs/competition/报告模块结构.md)
 - [评测证据](docs/benchmarks/评测证据与可比性.md)
 - [交接摘要与当前协作边界](docs/process/交接摘要.md)
 
