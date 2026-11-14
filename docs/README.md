@@ -11,6 +11,7 @@
 ## 综述
 
 - [架构与训练目标比较](reviews/架构与训练目标比较.md)：以研究问题组织解释，引用逐篇笔记。
+- [初赛报告草稿](report/初赛报告草稿.md)（v0.1，模块 1–3）
 - [多尺度演化建模调研](reviews/多尺度演化建模调研.md)：世界模型（H-JEPA、CW-VAE、MTS3、THICK）与天气模型如何处理不同尺度。
 - [评测证据与可比性](benchmarks/评测证据与可比性.md)：解释分数的适用范围。
 - [评测体系索引](benchmarks/README.md)：NeuralBench、AdaBrain-Bench、OmniEEG-Bench、MOABB。
