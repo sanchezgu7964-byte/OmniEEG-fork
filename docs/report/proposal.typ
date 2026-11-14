@@ -68,9 +68,85 @@ EEG 基础模型的核心承诺是：一次预训练，多任务迁移。近年�
 
 以 NeuralBench 公开快照为例，REVE (Base) 总体 mean\_rank = 4.22，36 项 EEG 任务中 12 项排名第一。但在疾病诊断方向，精神分裂症识别仅 43.7%（最佳 ATCNet 72.9%），癫痫检测 77.6%（最佳 BDTCN 85.5%），睡眠觉醒 55.7%（最佳 LUNA 59.5%）。与此同时，它在运动想象（68.0%，第一）和 SSVEP（96.1%，第二）上保持领先。
 
-这不是随机波动——它呈现出任务类型相关的模式。我们的核心问题是：*这种差距究竟来自编码器的表征质量，还是来自表征到决策之间的读出方式？*
+这不是随机波动——它呈现出任务类型相关的模式（图 1）。我们的核心问题是：*这种差距究竟来自编码器的表征质量，还是来自表征到决策之间的读出方式？*
 
-REVE 作者自身的 Table 4 提供了关键线索：pooled 与 unpooled 读出在多个数据集上产生了巨大的性能差异（FACED 24.0% vs. 42.2%，BCI-IV-2a 43.2% vs. 51.7%）。这意味着信息可能已经存在于编码器的分层表征中，但固定的读出方式未能为每种任务提取到最相关的模式。
+// ── 图1：REVE 跨任务性能差距 ──
+#v(0.6em)
+#figure(
+  {
+    let tasks = ("运动想象", "SSVEP", "癫痫检测", "睡眠觉醒", "精神分裂症")
+    let reve =  (68.0, 96.1, 77.6, 55.7, 43.7)
+    let best =  (68.0, 96.1, 85.5, 59.5, 72.9)
+    let best_name = ("REVE", "SPaRCNet", "BDTCN", "LUNA", "ATCNet")
+    let bar_w = 28pt
+    let gap = 6pt
+    let max_h = 120pt
+    let col_reve = rgb("#4472C4")
+    let col_best = rgb("#ED7D31")
+    let col_gap  = rgb("#FF4444")
+
+    set text(size: 8pt)
+    box(width: 100%, height: 180pt, {
+      // Y-axis
+      place(dx: 30pt, dy: 0pt, line(start: (0pt, 0pt), end: (0pt, max_h + 2pt), stroke: 0.4pt))
+      for pct in (0, 25, 50, 75, 100) {
+        let y = max_h - max_h * pct / 100
+        place(dx: 10pt, dy: y - 4pt, text(size: 7pt, str(pct) + "%"))
+        place(dx: 30pt, dy: y, line(start: (0pt, 0pt), end: (380pt, 0pt), stroke: (paint: luma(220), thickness: 0.3pt)))
+      }
+
+      for (i, task) in tasks.enumerate() {
+        let x_base = 45pt + i * 76pt
+        let h_r = max_h * reve.at(i) / 100
+        let h_b = max_h * best.at(i) / 100
+
+        // REVE bar
+        place(dx: x_base, dy: max_h - h_r,
+          rect(width: bar_w, height: h_r, fill: col_reve, stroke: none))
+        place(dx: x_base + 2pt, dy: max_h - h_r - 11pt,
+          text(size: 6.5pt, weight: "bold", fill: col_reve, str(reve.at(i)) + "%"))
+
+        // Best bar
+        place(dx: x_base + bar_w + gap, dy: max_h - h_b,
+          rect(width: bar_w, height: h_b, fill: col_best, stroke: none))
+        place(dx: x_base + bar_w + gap + 1pt, dy: max_h - h_b - 11pt,
+          text(size: 6.5pt, weight: "bold", fill: col_best, str(best.at(i)) + "%"))
+
+        // Gap annotation for weak tasks
+        if best.at(i) - reve.at(i) > 2 {
+          let gap_val = calc.round(best.at(i) - reve.at(i), digits: 1)
+          place(dx: x_base + 8pt, dy: max_h - h_b - 24pt,
+            text(size: 7pt, weight: "bold", fill: col_gap, sym.Delta + str(gap_val)))
+        }
+
+        // Task label
+        place(dx: x_base - 2pt, dy: max_h + 4pt,
+          text(size: 7.5pt, task))
+      }
+
+      // Legend
+      place(dx: 200pt, dy: max_h + 24pt, {
+        box(inset: 4pt, {
+          rect(width: 8pt, height: 8pt, fill: col_reve, stroke: none)
+          h(2pt)
+          text(size: 7.5pt, "REVE (Base)")
+          h(10pt)
+          rect(width: 8pt, height: 8pt, fill: col_best, stroke: none)
+          h(2pt)
+          text(size: 7.5pt, "各任务最佳模型")
+        })
+      })
+    })
+  },
+  caption: [REVE 在 NeuralBench 上的逐任务表现：强项（运动想象、SSVEP）领先或持平，但疾病诊断类任务存在显著差距（红色标注）。数据来源：NeuralBench 官方快照 fe31393。],
+) <fig-gap>
+
+REVE 作者自身的 Table 4（图 2）提供了关键线索：pooled 与 unpooled 读出在多个数据集上产生了巨大的性能差异（FACED 24.0% vs. 42.2%，BCI-IV-2a 43.2% vs. 51.7%）。这意味着信息可能已经存在于编码器的分层表征中，但固定的读出方式未能为每种任务提取到最相关的模式。
+
+#figure(
+  image("reve-page-9.png", width: 95%),
+  caption: [REVE 原文 Table 3–4（第 9 页）。Table 4 清晰展示 pooled 与 unpooled 读出在逐数据集上的性能差异：FACED pooled 仅 24.0%，unpooled 达 42.2%；多个数据集出现 10+ 百分点的差距，说明读出方式是性能的关键变量。],
+) <fig-reve-table>
 
 本方案围绕这一观察展开：与其改动已经被大规模预训练验证过的编码器，不如聚焦于*如何从同一套表征中，为不同任务提取不同的信息*。
 
@@ -85,6 +161,11 @@ REVE 作者自身的 Table 4 提供了关键线索：pooled 与 unpooled 读出�
 *压缩到潜在空间的路线。* BrainOmni 在进入主模型前，先以传感器条件化的 cross-attention 将可变通道压缩为固定数量的潜在源，再离散化和建模。这意味着主模型处理的已不是电极信号，而是推断出的共同空间。
 
 这两条路线的关键区分在于：接受不同通道数的输入形状，不等于获得了跨电极布局的不变性。通道排列、参考方式和坐标归一化仍然影响语义。本赛事 7 个分赛道的通道配置从 4 到 128 不等；选择哪条路线，直接约束了预训练权重的复用范围。
+
+#figure(
+  image("reve-arch.png", width: 95%),
+  caption: [REVE 预训练框架总览（原文 Figure 1）。主路径（下方）：Patch Embedding → 结构化 Block Masking → Transformer Encoder → Decoder → L1 波形重建。辅助路径（上方）：跨层 Attention Pooling → Reconstruction MLP → L1 辅助重建。4D 位置编码（左上）将电极三维坐标与时间 patch 索引结合。本方案的改进聚焦于编码器之后的读出环节（图中未展示的下游适配部分）。],
+) <fig-reve-arch>
 
 == 全局关系与局部结构：交互模式的设计选择
 
@@ -103,6 +184,16 @@ REVE 使用波形 L1 重建，外加跨层 attention pooling 的辅助重建路�
 FAME Table 7 的 13 任务平均，50M 版本 61.4% 对 REVE 60.9%，差距不大但方向一致。值得注意的是，精神分裂症从 47.2% 提升到 67.7%——这恰好是 REVE 在 NeuralBench 上最显著的弱项之一。但需要谨慎：REVE 使用 L1 而非 MSE，FAME 对 MSE 的 Parseval 频率偏差论证不能直接搬用；且 FAME 的 1B 版本（60.8%）反而低于 50M，说明这不是简单的"频段平衡必然更好"。
 
 EEGPT 提供了第三种思路：用完整上下文的 target encoder 表征作为监督目标，减少对噪声原始波形的依赖。这在概念上与 REVE 的辅助路径形成互补——一个压缩当前编码器的输出，一个对齐到动量更新的参考表征。
+
+#figure(
+  image("fame-page-19.png", width: 95%),
+  caption: [FAME 原文 Table 7 与 Figure 7（第 19 页）。上：13 任务 FT 对比，精神分裂症从 REVE 的 47.2% 提升到 FAME-50M 的 67.7%，但情绪任务反而下降。下：频率偏差与下游性能的相关性热力图，说明频段偏差的影响因任务而异。],
+) <fig-fame-table>
+
+#figure(
+  image("fame_mae_comparison.png", width: 90%),
+  caption: [FAME vs. 标准 MAE 的逐任务对比（42 个任务）。FAME 在 27/42 个任务上胜出，均值从 0.429 提升到 0.462，但优势集中在特定任务类型，非全面碾压。],
+) <fig-fame-bar>
 
 #par(first-line-indent: 0em)[
   *关键见解：* 不同预训练目标在不同任务类型上的优势各异，且不存在脱离具体协议的必然优劣。这强化了我们的核心判断——与其在编码阶段寻找单一最优目标，不如确保读出机制能从已有表征中充分提取任务相关信息。
@@ -125,7 +216,131 @@ EEGPT 提供了第三种思路：用完整上下文的 target encoder 表征作�
 
 我们的方案建立在一个务实的判断上：在比赛从零训练的约束下，编码器架构的改动必须与训练预算匹配。REVE 已在大规模数据上验证了其编码能力；大幅修改编码器意味着丢弃这些设计经验的指导价值。因此，我们将改进聚焦于编码器之后的读出与适配层。
 
-核心设计包含三个互相配合的组件：
+核心设计包含三个互相配合的组件（图 2）：
+
+// ── 图2：方法总体架构 ──
+#v(0.4em)
+#figure(
+  {
+    let box_h = 28pt
+    let box_stroke = 0.6pt
+    let c_enc = rgb("#DAE8FC")    // blue - encoder
+    let c_read = rgb("#D5E8D4")   // green - our readout
+    let c_pre = rgb("#FFF2CC")    // yellow - pretrain
+    let c_input = rgb("#F8CECC")  // red - input
+    let arrow_s = 0.8pt
+
+    set text(size: 8pt)
+    box(width: 100%, height: 260pt, {
+
+      // ── Input ──
+      place(dx: 20pt, dy: 10pt,
+        rect(width: 90pt, height: box_h, fill: c_input, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, text(weight: "bold", "EEG  B×C×T"))))
+      place(dx: 130pt, dy: 10pt,
+        rect(width: 90pt, height: box_h, fill: c_input, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, text("电极坐标 C×3"))))
+
+      // Arrows down
+      place(dx: 62pt, dy: 38pt, line(start: (0pt, 0pt), end: (0pt, 14pt), stroke: arrow_s))
+      place(dx: 58pt, dy: 51pt, text(size: 10pt, sym.arrow.b))
+
+      // ── Patch + PE ──
+      place(dx: 20pt, dy: 60pt,
+        rect(width: 200pt, height: box_h, fill: c_enc, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, text("逐通道分段投影 + 4D 位置编码"))))
+
+      place(dx: 118pt, dy: 88pt, line(start: (0pt, 0pt), end: (0pt, 14pt), stroke: arrow_s))
+      place(dx: 114pt, dy: 101pt, text(size: 10pt, sym.arrow.b))
+
+      // ── Encoder ──
+      place(dx: 20pt, dy: 110pt,
+        rect(width: 200pt, height: 36pt, fill: c_enc, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, {
+            text(weight: "bold", "Transformer 编码器")
+            linebreak()
+            text(size: 7pt, fill: luma(80), "结构化 mask · L1 重建 · 辅助全局重建")
+          })))
+
+      // ── Pretrain branch (left) ──
+      place(dx: 20pt, dy: 146pt, line(start: (40pt, 0pt), end: (40pt, 16pt), stroke: arrow_s))
+      place(dx: 56pt, dy: 161pt, text(size: 10pt, sym.arrow.b))
+      place(dx: 0pt, dy: 170pt,
+        rect(width: 120pt, height: box_h, fill: c_pre, stroke: (paint: luma(180), thickness: box_stroke, dash: "dashed"), radius: 4pt,
+          align(center + horizon, {
+            text(size: 7.5pt, "预训练：波形重建 + 频段调节")
+          })))
+
+      // ── Our readout branch (right) ──
+      // Arrow from encoder right side going right
+      place(dx: 220pt, dy: 126pt, line(start: (0pt, 0pt), end: (30pt, 0pt), stroke: arrow_s))
+      place(dx: 247pt, dy: 122pt, text(size: 10pt, sym.arrow.r))
+
+      // Multi-layer aggregation
+      place(dx: 260pt, dy: 60pt,
+        rect(width: 160pt, height: box_h, fill: c_read, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, {
+            text(weight: "bold", "多层表征聚合")
+            linebreak()
+            text(size: 7pt, "可学习层权重组合")
+          })))
+
+      // Arrows between layers and encoder
+      place(dx: 220pt, dy: 118pt, {
+        // dashed lines from encoder to multi-layer
+        line(start: (0pt, 0pt), end: (40pt, -46pt), stroke: (paint: luma(140), thickness: 0.4pt, dash: "dotted"))
+        line(start: (0pt, -4pt), end: (40pt, -50pt), stroke: (paint: luma(140), thickness: 0.4pt, dash: "dotted"))
+        line(start: (0pt, -8pt), end: (40pt, -54pt), stroke: (paint: luma(140), thickness: 0.4pt, dash: "dotted"))
+      })
+
+      place(dx: 338pt, dy: 88pt, line(start: (0pt, 0pt), end: (0pt, 14pt), stroke: arrow_s))
+      place(dx: 334pt, dy: 101pt, text(size: 10pt, sym.arrow.b))
+
+      // Task query attention
+      place(dx: 260pt, dy: 110pt,
+        rect(width: 160pt, height: 36pt, fill: c_read, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, {
+            text(weight: "bold", "任务条件化 Attention 读出")
+            linebreak()
+            text(size: 7pt, "Task Query × Cross-Attention")
+          })))
+
+      place(dx: 338pt, dy: 146pt, line(start: (0pt, 0pt), end: (0pt, 14pt), stroke: arrow_s))
+      place(dx: 334pt, dy: 159pt, text(size: 10pt, sym.arrow.b))
+
+      // Spatial-temporal separation
+      place(dx: 260pt, dy: 168pt,
+        rect(width: 160pt, height: box_h, fill: c_read, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, {
+            text(weight: "bold", "空间-时间分离提取")
+            linebreak()
+            text(size: 7pt, "空间 query ⊕ 时间 query → 拼接")
+          })))
+
+      place(dx: 338pt, dy: 196pt, line(start: (0pt, 0pt), end: (0pt, 14pt), stroke: arrow_s))
+      place(dx: 334pt, dy: 209pt, text(size: 10pt, sym.arrow.b))
+
+      // Classification head
+      place(dx: 290pt, dy: 218pt,
+        rect(width: 100pt, height: box_h, fill: white, stroke: box_stroke, radius: 4pt,
+          align(center + horizon, text(weight: "bold", "分类头"))))
+
+      // ── Labels ──
+      place(dx: 20pt, dy: 208pt,
+        text(size: 7pt, fill: luma(120), "虚线框 = 仅预训练阶段"))
+      place(dx: 260pt, dy: 248pt, {
+        rect(width: 8pt, height: 8pt, fill: c_enc, stroke: box_stroke)
+        h(3pt)
+        text(size: 7.5pt, "编码器（REVE 框架）")
+        h(10pt)
+        rect(width: 8pt, height: 8pt, fill: c_read, stroke: box_stroke)
+        h(3pt)
+        text(size: 7.5pt, "本方案新增组件")
+      })
+    })
+  },
+  caption: [方法总体架构。左侧蓝色部分为基于 REVE 框架的编码器（预训练时含波形重建路径），右侧绿色部分为本方案提出的任务感知读出组件。编码器的多个中间层向读出模块提供分层表征（虚线）。],
+) <fig-arch>
 
 == 组件一：多层表征聚合
 
