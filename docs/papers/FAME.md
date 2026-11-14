@@ -168,6 +168,8 @@ flowchart LR
 
 **NeuralBench（附录 H Table 7，全量微调 BACC %，13 项平均）：** REVE 60.9、FAME-50M **61.4**、FAME-1B 60.8、LaBraM 59.8、CBraMod 57.4。差距很小；1B 平均不如 50M。分项差异很大：精神分裂症 REVE 47.2 vs FAME-50M 67.7；情绪 REVE 31.7 vs FAME-50M 28.6；SSVEP LaBraM、REVE 96.6，FAME-50M 95.9，CBraMod 80.1。
 
+**图 3(C)：各模型的低频偏置（从 PDF 第 5 页图中目测读数，约值，仅供参考）：** BIOT ≈ 2、FEMBA ≈ 7、**REVE ≈ 13**、LaBraM ≈ 21、CBraMod ≈ 21、BrainOmni ≈ 22、NeuroGPT ≈ 29、NeuroLM ≈ 42。即在 FAME 自己的度量下，**REVE 的低频偏置在现有模型中处于较低一档**。图 3(B) 的逐频段可恢复性曲线只画了 NeuroLM、BrainOmni、CBraMod、LaBraM、NeuroGPT，没有 REVE。
+
 **FAME vs MAE（附录 F 图 6）：** 同数据、同 50M、同种子，只换重建目标和输出头。42 个任务中 27 个 FAME 更好，其余“大多相近”；TUEV、HFO 提升最大。这是论文中最直接支持“目标函数有作用”的证据，但只有图、没有表格数值。
 
 **频率偏置与下游表现的相关（图 5、附录 J）：** 方向依任务而异。TUEV、AD65 上“频率越均衡越好”较一致；ADHD 上则是高频信息保留越好越有利。作者明确说：这一关联基于有限数量的模型，**只是探索性结果**。
