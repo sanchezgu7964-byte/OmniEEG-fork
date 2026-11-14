@@ -1,7 +1,7 @@
 # REVE 改造地图：哪些保留、哪些修改、哪些新增
 
 > 2026-11-14 晚。服务于用户的决定：复赛在 REVE 公开权重上**继续预训练**，按“频段、尺度、任务”三个维度改造。
-> 依据：[REVE 笔记](../papers/REVE.md)（论文 v1 全文）。**未核对代码**：Hugging Face 在当前会话的网络中被拦截，`brain-bzh/reve-base` 的代码、config、许可证，以及**公开权重是否包含 decoder 和辅助头**都没有确认。
+> 依据：[REVE 笔记](../papers/REVE.md)（论文 v1 全文）。**代码已部分核对**（2026-11-14 晚，作者仓库 [elouayas/reve_eeg](https://github.com/elouayas/reve_eeg)，提交 06a7059，见第 6 节）。
 > 本文只列选项和代价，取舍由用户决定。【助手推断】处需用户判断。
 
 ## 1. REVE 的数据流（Base：22 层，8 头，512 维，69M 参数）
@@ -78,18 +78,53 @@ flowchart LR
 
 **代价。** token 数与 patch 长度成反比，全注意力的计算量与 token 数平方成正比：0.25 s patch 的计算量约为 1 s 的 16 倍。62 ch × 10 s 用 0.25 s patch 会有约 2,480 个 token，代价很高。所以短 patch 只在需要的任务上用。
 
+## 3.6 不同长度的 patch 通过交替注意力共享信息（用户想法，2026-11-14 晚）
+
+**用户判断：** 不同长度的 patch 理论上可以通过交替注意力共享信息。
+
+**为什么成立（助手补充）。** 交替注意力的连通性与轴向注意力相同：先在 A 组内、再在 B 组内各做一次注意力，两层之后任意两个 token 之间都有路径。EEG 中已有先例：CBraMod 的空间 / 时间注意力，CSBrain 的 CST / SSA 交替。通用领域的先例有：
+- 轴向注意力（Ho et al., arXiv 1912.12180）；
+- CrossViT（Chen et al., ICCV 2021, arXiv 2103.14899）：小 patch 与大 patch 两个分支之间做交叉注意力；
+- Flamingo（Alayrac et al., NeurIPS 2022, arXiv 2204.14198）：在冻结的预训练层之间插入**门控交叉注意力层**，门控初始化为 0，使插入后第 0 步的输出与原模型相同。
+
+**在 REVE 上的一种做法（助手推断）。** token 记为（通道 $c$，尺度 $s$，时间 $t$），$s\in\{0.25, 0.5, 1\}$ s。
+- **A：尺度内注意力**：同一尺度的 token 之间做注意力。对 1 s 尺度，这**正是 REVE 原来的全注意力**，权重原样复用。短尺度的 token 数多，可以限制在同一通道或邻近时间的局部窗口内，控制计算量。
+- **B：跨尺度注意力**：同一通道、时间范围重叠的不同尺度 token 之间做注意力。每组只有几个 token，代价很小。
+- **“拼”而不“改”**：不替换 REVE 的 22 层，而是每隔 $k$ 层插入一个 B 层，门控初始化为 0（Flamingo 的做法）。第 0 步等于原版 REVE；继续预训练中，模型自己学会从短 patch 取多少细节。
+- **分工**：1 s 尺度承担全局（跨通道、跨时间）的信息；短尺度只看局部细节，通过 B 与 1 s 尺度交换。这样既保留了短 patch 的时间分辨率，又避免对所有短 patch 做全注意力带来的约 16 倍计算量。
+
+**实现上的便利（代码核对）。** REVE 的注意力不使用 mask，token 按“通道 × 时间”展平。A、B 都可以像 CBraMod 那样，通过 reshape 把分组放到 batch 维实现，同一套 Q/K/V 权重可以直接用。
+
 ## 4. 必须有的对照
 
 - **“只继续预训练、不加新目标”**：在同样的数据、步数下，只用原来的 L1 损失。没有这个对照，任何提升都可能只是“多训练了一段”或“领域适应”带来的，而不是方法本身。
 - 逐个去掉频段子空间、正交约束、尺度层、任务门控。
 - 可变 patch 对照：固定 1 s vs 可变长度（同样的继续预训练步数）。
+- 跨尺度信息共享对照：多尺度 token 各自独立（不插 B 层）vs 插入门控 B 层 vs 所有尺度 token 做一次全注意力（代价上限）。
 - 读出对照：同一表征用 pooled、unpooled、PCA、多项式读出，区分读出瓶颈与表征瓶颈。
 
 ## 5. 约束与待确认
 
 1. **SSVEP 只有 1 s。** 1 s patch 下只有 1 个时间 token，尺度层在这个数据集上退化。要么接受，让 SSVEP 只靠频段子空间；要么改①，代价是 patch 嵌入要重训。
 2. **复赛能用什么数据继续预训练。** 手册写的是“微调、线性探测或适配器”。用 14 个下游数据集的训练集做无标签继续预训练，大概率合规；用外部公开语料是否允许，需要向主办方确认。
-3. **公开权重的内容。** 是否包含 decoder、辅助头；许可证；需要开放 huggingface.co 的网络访问后核对代码。
+3. **公开权重的内容。** 已核对（第 6 节）：只有编码器与 `cls_query_token`，MIT 许可。
 4. **算力。** REVE Base 完整预训练按作者估算约 260 A100 小时；继续预训练只能占其中一小部分，具体额度看复赛共享算力。
+
+## 6. 代码核对结果（[elouayas/reve_eeg](https://github.com/elouayas/reve_eeg)，提交 06a7059，MIT 许可）
+
+| 问题 | 代码中的事实 | 位置 |
+|---|---|---|
+| 许可证 | MIT | `LICENSE` |
+| 公开权重包含什么 | Hugging Face 版只有**编码器 + `cls_query_token`**（注意力池化的 query）；`from_pretrained` 取出 `cls_query_token` 后以 `strict=True` 加载编码器。**decoder（4 层）和辅助重建头 `cls_to_pixels` 不在公开权重中** | `src/models/encoder.py`，`hf/reve-base/modeling_reve.py` |
+| 继续预训练的含义 | 需要**重新初始化** decoder 和辅助头；可先冻结编码器、只训 decoder 热身，再解冻 | 助手推断 |
+| patch 数 | `eeg.unfold(size=200, step=180)`：只计完整窗口，$p=\lfloor(T-200)/180\rfloor+1$，与 REVE 笔记中按此推算的表一致 | `encoder.py` `forward` |
+| 时间坐标 | patch **序号** $0..p-1$；Fourier 部分乘以 0.1，MLP 部分用原始序号。不是秒。可变 patch 时需改成按秒计的连续时间 | `FourierEmb4D.add_time_patch`、`forward` |
+| Fourier 维度 | freqs=4，四维笛卡尔积 $4^4=256$，cos/sin 后 512 | `FourierEmb4D` |
+| 坐标噪声 | `noise_ratio=0.0025`（坐标单位推测为米，即 0.25 cm） | `configs/encoder/base.yaml` |
+| 编码器 | 22 层，8 头 × 64 维，RMSNorm，GEGLU（比例 2.66），无 bias，注意力**不支持 mask**（FlashAttention varlen 或 SDPA） | `models/backbone.py` |
+| Patch 嵌入 | `nn.Linear(200, 512)`，带 bias | `encoder.py` |
+| mask | `MAE.forward` 默认随机 mask；块状 mask 由数据加载器生成后传入（`use_block: True`，比例 0.55） | `models/mae.py`，`utils/data_loading.py` |
+| 辅助损失 | 各层输出拼接后，以 `cls_query_token` 做注意力池化，复制到被遮位置，经 2 层 MLP 重建，L1 | `models/mae.py` |
+| 电极坐标 | 单独的位置库 `reve-positions`（`positions.json`），按电极名查坐标 | `hf/reve-positions/` |
 
 [返回文档入口](../README.md)
