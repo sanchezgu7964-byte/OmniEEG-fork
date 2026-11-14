@@ -1,0 +1,12 @@
+@page { size: A4; margin: 18mm 16mm; }
+body { font-family: "WenQuanYi Zen Hei", sans-serif; font-size: 10.5pt; line-height: 1.55; color:#111; }
+h1 { font-size: 20pt; text-align:center; margin: 0 0 12pt; }
+h2 { font-size: 14pt; border-bottom: 1px solid #999; padding-bottom: 3pt; margin-top: 18pt; page-break-after: avoid; }
+h3 { font-size: 12pt; margin-top: 12pt; page-break-after: avoid; }
+table { border-collapse: collapse; width: 100%; font-size: 9pt; margin: 6pt 0; page-break-inside: auto; }
+th, td { border: 1px solid #aaa; padding: 3pt 5pt; vertical-align: top; }
+th { background: #eee; }
+tr { page-break-inside: avoid; }
+blockquote { border-left: 3px solid #888; margin: 6pt 0; padding: 2pt 10pt; color:#333; background:#f6f6f6; }
+pre.mermaid { text-align:center; background: none; page-break-inside: avoid; }
+code { font-size: 9pt; }
