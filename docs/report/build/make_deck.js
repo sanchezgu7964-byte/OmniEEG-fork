@@ -4,6 +4,8 @@ const pptxgen = require("pptxgenjs");
 const React = require("react");
 const ReactDOMServer = require("react-dom/server");
 const sharp = require("sharp");
+const JSZip = require("jszip");
+const fs = require("fs");
 const fa = require("react-icons/fa");
 const { applyTheme } = require(process.env.PPTX_SKILL + "/scripts/apply_theme.js");
 
@@ -12,8 +14,8 @@ const OUT = path.join(__dirname, "..", "proposal.pptx");
 
 const THEME = {
   name: "Oracula",
-  headFontFace: "Calibri",
-  bodyFontFace: "Calibri",
+  headFontFace: "Georgia",
+  bodyFontFace: "Georgia",
   colors: {
     dk1: "1F2328", lt1: "FFFFFF", dk2: "1A4E8A", lt2: "EEF3F9",
     accent1: "1A4E8A", accent2: "D9822B", accent3: "3A8F5C",
@@ -136,7 +138,7 @@ function content(section, kicker, title) {
   {
     const s = content(S1, "研究动机", "为什么选主赛道：一个模型同时服务七类任务");
     const tracks = [
-      ["信号可靠性", "58 / 18 通道 · 2 s"], ["疾病诊断", "19 通道 · 2 s\n20 通道 · 10 s"], ["睡眠分期", "4 / 6 通道 · 30 s"], ["认知与情绪", "30 / 62 通道 · 10 s"],
+      ["信号可靠性", "58 / 18 通道 · 2 s"], ["疾病诊断", "19 通道 · 2 s\n20 通道 · 10 s"], ["睡眠分期", "4 / 6 通道 · 30 s"], ["认知与情绪", "30/62 通道 · 10 s"],
       ["自然刺激解码", "128 通道 · 2 s"], ["运动想象", "64 / 22 通道 · 4 s"], ["SSVEP", "60 通道 · 1 s / 2 s"],
     ];
     tracks.forEach(([n, spec], i) => {
@@ -165,19 +167,8 @@ function content(section, kicker, title) {
   // 3 准确率
   {
     const s = content(S1, "研究动机 · 问题 1", "基础模型并不稳定地超过专用小模型");
-    const gaps = [
-      ["异常 EEG 筛查 · BENDR", 3.7], ["睡眠觉醒 · LUNA", 3.8], ["痴呆症 · 手工特征", 6.7], ["认知负荷 · ShallowFBCSPNet", 6.9],
-      ["心理想象 · ShallowFBCSPNet", 7.5], ["帕金森病 · BIOT", 7.9], ["癫痫发作 · BDTCN", 7.9], ["c-VEP · LaBraM", 8.5],
-      ["视听刺激 · 手工特征", 11.8], ["精神分裂症 · ATCNet", 29.2],
-    ];
-    s.addChart(pres.charts.BAR, [{ name: "落后幅度", labels: gaps.map((g) => g[0]), values: gaps.map((g) => g[1]) }], {
-      x: 0.6, y: 1.55, w: 7.6, h: 5.0, barDir: "bar", chartColors: [H.accent6],
-      showTitle: true, title: "REVE 落后该任务最佳模型的平衡准确率（百分点）", titleFontSize: 12, titleColor: H.dk1, titleFontFace: "+mn-lt",
-      showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 11, dataLabelColor: H.dk1, dataLabelFontFace: "+mn-lt", dataLabelFormatCode: "0.0",
-      catAxisLabelFontSize: 11, catAxisLabelColor: H.dk1, catAxisLabelFontFace: "+mn-lt", valAxisHidden: true,
-      valGridLine: { style: "none" }, catGridLine: { style: "none" }, showLegend: false, barGapWidthPct: 45,
-    });
-    caption(s, "数据：NeuralBench 统一微调协议，官方提交 fe31393；标签为“任务 · 该任务最佳模型”。", { x: 0.6, y: 6.6, w: 7.6, h: 0.3 });
+    s.addImage({ path: path.join(FIG, "fig_neuralbench_reve_gap.png"), x: 0.6, y: 1.55, w: 6.75, h: 4.99, objectName: "fig-gap" });
+    caption(s, "REVE 与各任务最佳模型的平衡准确率差距。数据：NeuralBench 统一微调协议，官方提交 fe31393。", { x: 0.6, y: 6.6, w: 7.6, h: 0.3 });
     [["68.0%", "运动想象（第 1）"], ["96.1%", "SSVEP（第 2）"]].forEach(([n, l], i) => {
       text(s, n, { x: 8.7 + i * 2.1, y: 1.65, w: 2.0, h: 0.7, fontSize: 32, bold: true, color: C.accent3 });
       text(s, l, { x: 8.7 + i * 2.1, y: 2.35, w: 2.0, h: 0.35, fontSize: 12, color: C.accent5 });
@@ -209,15 +200,9 @@ function content(section, kicker, title) {
   // 5 泛化与评测
   {
     const s = content(S1, "研究动机 · 问题 3、4", "跨被试泛化验证不足，分数随评测协议剧变");
-    s.addChart(pres.charts.BAR, [{ name: "R²", labels: ["EEGNet", "BIOT", "LaBraM", "EEGPT", "CBraMod"], values: [26.65, 27.09, 25.35, 23.47, 2.4] }], {
-      x: 0.6, y: 1.55, w: 5.6, h: 3.6, barDir: "col", chartColors: [H.accent1],
-      showTitle: true, title: "SEED-VIG 跨被试回归 R²（%）", titleFontSize: 12, titleColor: H.dk1, titleFontFace: "+mn-lt",
-      showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 11, dataLabelColor: H.dk1, dataLabelFontFace: "+mn-lt", dataLabelFormatCode: "0.0",
-      catAxisLabelFontSize: 12, catAxisLabelColor: H.dk1, catAxisLabelFontFace: "+mn-lt", valAxisHidden: true,
-      valGridLine: { style: "none" }, catGridLine: { style: "none" }, showLegend: false, barGapWidthPct: 60,
-    });
-    caption(s, "数据：AdaBrain-Bench Table 2。从零训练的 EEGNet 与基础模型持平；CBraMod 原文自报 33.7%。", { x: 0.6, y: 5.2, w: 5.6, h: 0.5 });
-    text(s, bullets(["EEG Conformer 在 BCI IV-2a 上被试内 78.7%，跨被试 47.0%", "UniMind 未考察完全未见被试；ECHO 推理时需测试被试本人的带标签样本"], 14), { x: 0.6, y: 5.8, w: 5.6, h: 1.1 });
+    s.addImage({ path: path.join(FIG, "fig_seedvig_regression.png"), x: 0.6, y: 1.7, w: 5.6, h: 2.2, objectName: "fig-seedvig" });
+    caption(s, "SEED-VIG 跨被试回归 R²。数据：AdaBrain-Bench Table 2。从零训练的 EEGNet 与基础模型持平；CBraMod 原文自报 33.7%。", { x: 0.6, y: 4.0, w: 5.6, h: 0.5 });
+    text(s, bullets(["EEG Conformer 在 BCI IV-2a 上被试内 78.7%，跨被试 47.0%", "UniMind 未考察完全未见被试；ECHO 推理时需测试被试本人的带标签样本"], 14), { x: 0.6, y: 4.8, w: 5.6, h: 1.8 });
     s.addImage({ path: path.join(FIG, "fig_reve_ssvep_protocols.png"), x: 6.7, y: 1.7, w: 6.0, h: 1.63, objectName: "fig-ssvep" });
     caption(s, "同一个 REVE 在不同评测协议下的 SSVEP 平衡准确率（仅说明协议影响，不作排行）。", { x: 6.7, y: 3.4, w: 6.0, h: 0.3 });
     [["5.6%", "线性探测\nOmniEEG-Bench"], ["67.4%", "全量微调\nOmniEEG-Bench"], ["96.1%", "全量微调\nNeuralBench"]].forEach(([n, l], i) => {
@@ -280,7 +265,7 @@ function content(section, kicker, title) {
       [{ text: "频段标准化时频活动", options: { bold: true } }, "FAME", "各频段对数功率分别标准化、等权监督"],
       ["潜在表示", "EEGPT、S-JEPA", "表示空间对齐；去掉后 BCIC-2A 0.585 → 0.529"],
       ["对比预测", "BENDR、BIOT", "避免逐点重建；多数任务不及专用方法"],
-    ], { x: 0.6, y: 1.65, w: 7.3, colW: [1.9, 1.8, 3.6], rowH: 0.52, fontSize: 13 });
+    ], { x: 0.6, y: 1.65, w: 7.3, colW: [1.6, 2.3, 3.4], rowH: 0.52, fontSize: 13 });
     s.addImage({ path: path.join(FIG, "related", "FAME_fig2.png"), x: 8.2, y: 1.7, w: 4.5, h: 2.52, objectName: "fig-fame2" });
     caption(s, "波形重建 vs 按频段平衡的重建（图源：FAME Fig. 2）。", { x: 8.2, y: 4.27, w: 4.5, h: 0.3 });
     card(s, 0.6, 5.0, 12.1, 1.6, C.background2, "note");
@@ -447,7 +432,7 @@ function content(section, kicker, title) {
       { text: "正交约束（JEPA-Anything）：", options: { bold: true, color: C.text2, fontSize: 14 } },
       ...eq(["L", { sub: "orth" }, " = Σ", { sub: "k" }, " ‖P", { sub: "k" }, { sup: "⊤" }, "P", { sub: "k" }, " − I", { sub: "r" }, "‖", { sub: "F" }, { sup: "2" }, " + Σ", { sub: "i<j" }, " ‖P", { sub: "i" }, { sup: "⊤" }, "P", { sub: "j" }, "‖", { sub: "F" }, { sup: "2" }, "      几何上不重叠，不强求统计独立"], b).map((r, i, a) => (i === a.length - 1 ? { ...r, options: { ...r.options, breakLine: true } } : r)),
       { text: "总损失：", options: { bold: true, color: C.text2, fontSize: 14 } },
-      ...eq(["L = Σ", { sub: "k∈频段" }, " L", { sub: "desc" }, { sup: "(k)" }, " + λ", { sub: "f" }, " Σ", { sub: "j∈自由" }, " L", { sub: "latent" }, { sup: "(j)" }, " + λ", { sub: "orth" }, " L", { sub: "orth" }, " + λ", { sub: "keep" }, " L", { sub: "keep" }, "      L", { sub: "keep" }, "：对冻结原版 REVE 的特征蒸馏，防止遗忘"], b),
+      ...eq(["L = Σ", { sub: "k∈频段" }, " L", { sub: "desc" }, { sup: "(k)" }, " + λ", { sub: "f" }, " Σ", { sub: "j∈自由" }, " L", { sub: "latent" }, { sup: "(j)" }, " + λ", { sub: "orth" }, " L", { sub: "orth" }, " + λ", { sub: "keep" }, " L", { sub: "keep" }, "      L", { sub: "keep" }, "：对冻结 REVE 的特征蒸馏"], b),
     ], { x: 0.85, y: 5.58, w: 11.7, h: 1.05, fontSize: 16 });
   }
 
@@ -492,7 +477,7 @@ function content(section, kicker, title) {
   pres.addSection({ title: S4 });
   {
     const s = content(S4, "实验 · 统一协议与基线", "统一协议下的四层基线");
-    [["8 : 1 : 1", "按被试划分训练 / 验证 / 测试"], ["3", "个官方随机种子，报告均值 ± 标准差"], ["42", "次运行 / 配置（14 数据集 × 3 种子）"], ["BACC", "主指标；另报 PR-AUC、ROC-AUC、F1"]].forEach(([n, l], i) => {
+    [["8 : 1 : 1", "按被试划分训练 / 验证 / 测试"], ["3", "个官方随机种子，报告均值 ± 标准差"], ["42", "次运行 / 配置（14 数据集 × 3 种子）"], ["BACC", "主指标；另报 AUC 与 F1"]].forEach(([n, l], i) => {
       const x = 0.6 + i * 3.08;
       card(s, x, 1.6, 2.9, 1.6, C.background2, "stat-" + i);
       text(s, n, { x: x + 0.2, y: 1.72, w: 2.5, h: 0.7, fontSize: 32, bold: true, color: C.text2 });
@@ -570,9 +555,9 @@ function content(section, kicker, title) {
     const hw = [[I.cogs, "硬件", "以单卡 80 GB 显存的 A100 级 GPU 估算，复赛约 4–8 卡并行；以官方配额为准"], [I.db, "存储", "REVE-Base 约 69M 参数，单个检查点约 280 MB；630 个检查点约 180 GB，另需描述子缓存"]];
     hw.forEach(([ic, h, d], i) => {
       const x = 0.6 + i * 6.15;
-      iconCircle(s, ic, x, 5.45, 0.6);
-      text(s, h, { x: x + 0.8, y: 5.42, w: 5.0, h: 0.38, fontSize: 15, bold: true, color: C.text2 });
-      text(s, d, { x: x + 0.8, y: 5.82, w: 5.0, h: 0.9, fontSize: 13 });
+      iconCircle(s, ic, x, 5.75, 0.6);
+      text(s, h, { x: x + 0.8, y: 5.72, w: 5.0, h: 0.38, fontSize: 15, bold: true, color: C.text2 });
+      text(s, d, { x: x + 0.8, y: 6.1, w: 5.0, h: 0.85, fontSize: 13 });
     });
   }
 
@@ -627,5 +612,16 @@ function content(section, kicker, title) {
 
   await pres.writeFile({ fileName: OUT });
   await applyTheme(OUT, THEME);
+  // 中文走主题的东亚字体槽：宋体
+  const zip = await JSZip.loadAsync(fs.readFileSync(OUT));
+  for (const f of Object.keys(zip.files).filter((n) => /^ppt\/theme\/theme\d+\.xml$/.test(n))) {
+    const xml = (await zip.file(f).async("string"))
+      .replace(/<a:ea typeface="[^"]*"\/>/g, '<a:ea typeface="SimSun"/>')
+      .replace(/(<a:font script="Hans" typeface=")[^"]*"/g, '$1SimSun"');
+    zip.file(f, xml);
+  }
+  const clean = new JSZip();
+  for (const [n, f] of Object.entries(zip.files)) if (!f.dir) clean.file(n, await f.async("uint8array"), { createFolders: false });
+  fs.writeFileSync(OUT, await clean.generateAsync({ type: "nodebuffer", compression: "DEFLATE" }));
   console.log("wrote " + OUT);
 })();
