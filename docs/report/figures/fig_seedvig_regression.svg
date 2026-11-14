@@ -1,39 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="760" height="372" viewBox="0 0 760 372"><rect width="100%" height="100%" fill="#ffffff"/><text x="20.0" y="28.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="bold" font-family="WenQuanYi Zen Hei, sans-serif">回归任务 SEED-VIG（警觉度估计）：基础模型没有明显优于从零训练</text>
-<text x="20.0" y="48.0" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">跨被试，全量微调，R²（%）。来源：AdaBrain-Bench（arXiv 2507.09882）Table 2 / 官方 README</text>
-<rect x="20.0" y="60.0" width="12.0" height="12.0" rx="2" fill="#2a78d6"/>
-<text x="38.0" y="70.5" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">预训练基础模型</text>
-<rect x="134.0" y="60.0" width="12.0" height="12.0" rx="2" fill="#eb6834"/>
-<text x="152.0" y="70.5" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">从零训练的监督模型</text>
-<line x1="130.0" y1="86.0" x2="130.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
-<text x="130.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">0%</text>
-<line x1="316.7" y1="86.0" x2="316.7" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
-<text x="316.7" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">10%</text>
-<line x1="503.3" y1="86.0" x2="503.3" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
-<text x="503.3" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">20%</text>
-<line x1="690.0" y1="86.0" x2="690.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
-<text x="690.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">30%</text>
-<text x="120.0" y="109.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">BIOT</text>
-<rect x="130.0" y="98.0" width="505.7" height="14.0" rx="2" fill="#2a78d6"/>
-<text x="641.7" y="109.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">27.09</text>
-<text x="120.0" y="137.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">EEGNet</text>
-<rect x="130.0" y="126.0" width="497.5" height="14.0" rx="2" fill="#eb6834"/>
-<text x="633.5" y="137.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">26.65</text>
-<text x="120.0" y="165.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">LaBraM</text>
-<rect x="130.0" y="154.0" width="473.2" height="14.0" rx="2" fill="#2a78d6"/>
-<text x="609.2" y="165.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">25.35</text>
-<text x="120.0" y="193.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">EEGPT</text>
-<rect x="130.0" y="182.0" width="438.1" height="14.0" rx="2" fill="#2a78d6"/>
-<text x="574.1" y="193.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">23.47</text>
-<text x="120.0" y="221.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">LDMA</text>
-<rect x="130.0" y="210.0" width="208.1" height="14.0" rx="2" fill="#eb6834"/>
-<text x="344.1" y="221.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">11.15</text>
-<text x="120.0" y="249.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">ST-Tran</text>
-<rect x="130.0" y="238.0" width="74.3" height="14.0" rx="2" fill="#eb6834"/>
-<text x="210.3" y="249.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">3.98</text>
-<text x="120.0" y="277.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">EEG Conformer</text>
-<rect x="130.0" y="266.0" width="47.6" height="14.0" rx="2" fill="#eb6834"/>
-<text x="183.6" y="277.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">2.55</text>
-<text x="120.0" y="305.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">CBraMod</text>
-<rect x="130.0" y="294.0" width="44.8" height="14.0" rx="2" fill="#2a78d6"/>
-<text x="180.8" y="305.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">2.40</text>
-<text x="20.0" y="354.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">注：CBraMod 原文报告同一任务 R² 为 33.7%，说明结果对复现设置高度敏感。</text></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="330" viewBox="0 0 760 330"><rect width="100%" height="100%" fill="#ffffff"/><text x="20.0" y="28.0" font-size="15" fill="#0b0b0b" text-anchor="start" font-weight="bold" font-family="WenQuanYi Zen Hei, sans-serif">回归任务 SEED-VIG（警觉度估计）：基础模型没有明显优于从零训练</text>
+<rect x="20.0" y="44.0" width="12.0" height="12.0" rx="2" fill="#2a78d6"/>
+<text x="38.0" y="54.5" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">预训练基础模型</text>
+<rect x="134.0" y="44.0" width="12.0" height="12.0" rx="2" fill="#eb6834"/>
+<text x="152.0" y="54.5" font-size="11.5" fill="#0b0b0b" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">从零训练的监督模型</text>
+<line x1="130.0" y1="70.0" x2="130.0" y2="300.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="130.0" y="315.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">0%</text>
+<line x1="316.7" y1="70.0" x2="316.7" y2="300.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="316.7" y="315.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">10%</text>
+<line x1="503.3" y1="70.0" x2="503.3" y2="300.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="503.3" y="315.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">20%</text>
+<line x1="690.0" y1="70.0" x2="690.0" y2="300.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="690.0" y="315.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">30%</text>
+<text x="120.0" y="93.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">BIOT</text>
+<rect x="130.0" y="82.0" width="505.7" height="14.0" rx="2" fill="#2a78d6"/>
+<text x="641.7" y="93.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">27.09</text>
+<text x="120.0" y="121.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">EEGNet</text>
+<rect x="130.0" y="110.0" width="497.5" height="14.0" rx="2" fill="#eb6834"/>
+<text x="633.5" y="121.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">26.65</text>
+<text x="120.0" y="149.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">LaBraM</text>
+<rect x="130.0" y="138.0" width="473.2" height="14.0" rx="2" fill="#2a78d6"/>
+<text x="609.2" y="149.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">25.35</text>
+<text x="120.0" y="177.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">EEGPT</text>
+<rect x="130.0" y="166.0" width="438.1" height="14.0" rx="2" fill="#2a78d6"/>
+<text x="574.1" y="177.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">23.47</text>
+<text x="120.0" y="205.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">LDMA</text>
+<rect x="130.0" y="194.0" width="208.1" height="14.0" rx="2" fill="#eb6834"/>
+<text x="344.1" y="205.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">11.15</text>
+<text x="120.0" y="233.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">ST-Tran</text>
+<rect x="130.0" y="222.0" width="74.3" height="14.0" rx="2" fill="#eb6834"/>
+<text x="210.3" y="233.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">3.98</text>
+<text x="120.0" y="261.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">EEG Conformer</text>
+<rect x="130.0" y="250.0" width="47.6" height="14.0" rx="2" fill="#eb6834"/>
+<text x="183.6" y="261.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">2.55</text>
+<text x="120.0" y="289.0" font-size="11.5" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">CBraMod</text>
+<rect x="130.0" y="278.0" width="44.8" height="14.0" rx="2" fill="#2a78d6"/>
+<text x="180.8" y="289.0" font-size="10.5" fill="#52514e" text-anchor="start" font-weight="normal" font-family="WenQuanYi Zen Hei, sans-serif">2.40</text></svg>

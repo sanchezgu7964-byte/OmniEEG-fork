@@ -34,10 +34,9 @@ class SVG:
 
 def header(svg, title, sub, legend):
     svg.text(20, 28, title, 15, TXT, weight="bold")
-    svg.text(20, 48, sub, 11, TXT2)
     x = 20
     for lab, col in legend:
-        svg.rect(x, 60, 12, 12, col, 2); svg.text(x + 18, 70.5, lab, 11.5, TXT); x += 30 + 12 * len(lab)
+        svg.rect(x, 44, 12, 12, col, 2); svg.text(x + 18, 54.5, lab, 11.5, TXT); x += 30 + 12 * len(lab)
 
 def axis(svg, x0, x1, y0, y1, vmax, ticks, unit="%"):
     for t in ticks:
@@ -52,8 +51,8 @@ CN = {"Schizophrenia":"精神分裂症","Audiovisual":"视听刺激","Seizure":"
       "Motor imagery":"运动想象","c-VEP":"c-VEP","Workload":"认知负荷","Sleep stage":"睡眠分期","Typing":"打字解码","Motor execution":"运动执行","Mental arith.":"心算","N170":"N170"}
 rows = [g for g in GAP if g["protocol"] == "NeuralBench FT" and g["metric"] == "Balanced accuracy"]
 rows.sort(key=lambda g: -float(g["gap"]))
-W, top, rh = 860, 92, 22
-H = top + rh * len(rows) + 60
+W, top, rh = 860, 76, 22
+H = top + rh * len(rows) + 30
 svg = SVG(W, H)
 header(svg, "NeuralBench：同一个 REVE，在不同任务上与最佳模型的差距",
        "统一微调协议，平衡准确率（%）；按差距从大到小排列。来源：NeuralBench 官方结果 JSON（提交 fe31393）",
@@ -68,17 +67,16 @@ for i, g in enumerate(rows):
     if gap > 0:
         svg.line(xr, y, xb, y, "#b9b8b2", 2)
         svg.circle(xb, y, 5, S2)
-        svg.text(xb + 9, y + 4, f'{g["best_model"]} {b:.1f}' + (f'（差 {gap:.1f}）' if gap >= 3 else ""), 10.5, TXT2)
+        svg.text(xb + 9, y + 4, f'{g["best_model"]} {b:.1f}' , 10.5, TXT2)
     else:
         svg.text(xr + 9, y + 4, "REVE 即最佳", 10.5, TXT2)
     svg.circle(xr, y, 5, S1)
-svg.text(20, H - 18, "注：只含以平衡准确率为指标的任务；不同任务类别数不同，横向数值不可互比。", 10.5, TXT2)
 svg.save("fig_neuralbench_reve_gap.svg")
 
 # ---------- 图 2：OmniEEG-Bench Benchmark-SSVEP，LP 与 FT ----------
 models = ["REVE", "CBraMod", "LaBraM", "NeuroGPT", "BrainOmni", "BIOT", "NeuroLM", "EEGNet", "EEGConformer"]
-W, top, gh = 760, 92, 34
-H = top + gh * len(models) + 56
+W, top, gh = 760, 76, 34
+H = top + gh * len(models) + 30
 svg = SVG(W, H)
 header(svg, "OmniEEG-Bench（Benchmark-SSVEP）：线性探测与全量微调的差距",
        "跨被试，平衡准确率（%）。来源：OmniEEG-Bench（arXiv 2606.00815）逐数据集结果表",
@@ -94,7 +92,6 @@ for i, m in enumerate(models):
             svg.text(x0 + 4, y + 4 + 12 * j + 9, "无（非预训练模型）", 10, TXT2); continue
         svg.rect(x0, y + 4 + 13 * j, (x1 - x0) * v / vmax, 11, col, 2)
         svg.text(x0 + (x1 - x0) * v / vmax + 5, y + 4 + 13 * j + 9.5, f"{v:.1f}", 10, TXT2)
-svg.text(20, H - 18, "注：EEGNet、EEG Conformer 为从零训练的监督模型，只有 FT。同一模型 LP 与 FT 可相差 60 个百分点以上。", 10.5, TXT2)
 svg.save("fig_omnieeg_ssvep_lp_ft.svg")
 
 # ---------- 图 3：同一模型，不同协议下的 SSVEP ----------
@@ -103,11 +100,10 @@ items = [("OmniEEG-Bench LP", get("OmniEEG LP", "Benchmark-SSVEP", "REVE")[0]),
          ("OmniEEG-Bench FT", get("OmniEEG FT", "Benchmark-SSVEP", "REVE")[0]),
          ("NeuralBench FT", float([g for g in GAP if g["task"] == "SSVEP"][0]["reve"])),
          ("FAME 论文 FT（附录 H）", get("FAME paper FT subset", "SSVEP", "REVE")[0])]
-W, top, rh = 760, 76, 30
-H = top + rh * len(items) + 50
+W, top, rh = 760, 56, 30
+H = top + rh * len(items) + 30
 svg = SVG(W, H)
 svg.text(20, 28, "同一个 REVE，在不同评测协议下的 SSVEP 平衡准确率", 15, TXT, weight="bold")
-svg.text(20, 48, "数据集、划分、适配方式各不相同，不构成排行榜；用来说明“分数主要由协议决定”。", 11, TXT2)
 x0, x1, vmax = 190, 690, 100
 axis(svg, x0, x1, top - 6, top + rh * len(items), vmax, [0, 25, 50, 75, 100])
 for i, (lab, v) in enumerate(items):
@@ -115,13 +111,12 @@ for i, (lab, v) in enumerate(items):
     svg.text(x0 - 10, y + 18, lab, 11.5, TXT, "end")
     svg.rect(x0, y + 7, (x1 - x0) * v / vmax, 14, S1, 2)
     svg.text(x0 + (x1 - x0) * v / vmax + 6, y + 18, f"{v:.1f}", 10.5, TXT2)
-svg.text(20, H - 16, "来源：OmniEEG-Bench 逐数据集表；FAME（arXiv 2608.01898）LP 表与附录 H；NeuralBench 官方结果 JSON。", 10.5, TXT2)
 svg.save("fig_reve_ssvep_protocols.svg")
 
 # ---------- 图 4：REVE 读出方式（REVE Table 4） ----------
 tasks = ["Faced", "BCIC2020-3", "BCIC-IV-2a", "TUEV", "HMC", "ISRUC", "PhysioNetMI", "Mumtaz", "M. Arithmetic", "TUAB"]
-W, top, gh = 760, 92, 34
-H = top + gh * len(tasks) + 56
+W, top, gh = 760, 76, 34
+H = top + gh * len(tasks) + 30
 svg = SVG(W, H)
 header(svg, "REVE-Base 冻结表示：池化读出与不池化读出",
        "线性探测，平衡准确率（%）。同一表示，只换读出方式。来源：REVE（arXiv 2510.21585）Table 4",
@@ -135,14 +130,13 @@ for i, t in enumerate(tasks):
         v, _ = get("REVE readout ablation LP", t, m)
         svg.rect(x0, y + 4 + 13 * j, (x1 - x0) * v / vmax, 11, col, 2)
         svg.text(x0 + (x1 - x0) * v / vmax + 5, y + 4 + 13 * j + 9.5, f"{v:.1f}", 10, TXT2)
-svg.text(20, H - 18, "注：FACED 上不池化高 18 个百分点，TUEV 上反而低 8 个百分点——读出方式本身就能大幅改变结论。", 10.5, TXT2)
 svg.save("fig_reve_readout.svg")
 
 # ---------- 图 5：SEED-VIG 回归（AdaBrain-Bench） ----------
 vig = [("BIOT", 27.09, 1), ("EEGNet", 26.65, 0), ("LaBraM", 25.35, 1), ("EEGPT", 23.47, 1), ("LDMA", 11.15, 0),
        ("ST-Tran", 3.98, 0), ("EEG Conformer", 2.55, 0), ("CBraMod", 2.40, 1)]
-W, top, rh = 760, 92, 28
-H = top + rh * len(vig) + 56
+W, top, rh = 760, 76, 28
+H = top + rh * len(vig) + 30
 svg = SVG(W, H)
 header(svg, "回归任务 SEED-VIG（警觉度估计）：基础模型没有明显优于从零训练",
        "跨被试，全量微调，R²（%）。来源：AdaBrain-Bench（arXiv 2507.09882）Table 2 / 官方 README",
@@ -154,6 +148,5 @@ for i, (m, v, fm) in enumerate(vig):
     svg.text(x0 - 10, y + 17, m, 11.5, TXT, "end")
     svg.rect(x0, y + 6, (x1 - x0) * v / vmax, 14, S1 if fm else S2, 2)
     svg.text(x0 + (x1 - x0) * v / vmax + 6, y + 17, f"{v:.2f}", 10.5, TXT2)
-svg.text(20, H - 18, "注：CBraMod 原文报告同一任务 R² 为 33.7%，说明结果对复现设置高度敏感。", 10.5, TXT2)
 svg.save("fig_seedvig_regression.svg")
 print("ok")

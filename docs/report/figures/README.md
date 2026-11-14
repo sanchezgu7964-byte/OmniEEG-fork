@@ -4,7 +4,7 @@
 
 ## 自绘图表（数据图，SVG + PNG）
 
-由 [`../build/make_charts.py`](../build/make_charts.py) 从 [`research/reve_route_20261113/benchmark_records.csv`](../../../research/reve_route_20261113/benchmark_records.csv) 与 `reve_task_gaps.csv` 生成；PNG 由 [`../build/svg2png.js`](../build/svg2png.js) 渲染（2 倍分辨率，供 PPT 使用）。配色为 dataviz 参考调色板前两个槽位（蓝 #2a78d6、橙 #eb6834），已用调色板校验脚本验证。
+图中只保留标题、图例和数值，出处写在报告图注里。由 [`../build/make_charts.py`](../build/make_charts.py) 从 [`research/reve_route_20261113/benchmark_records.csv`](../../../research/reve_route_20261113/benchmark_records.csv) 与 `reve_task_gaps.csv` 生成；PNG 由 [`../build/svg2png.js`](../build/svg2png.js) 渲染（2 倍分辨率，供 PPT 使用）。配色为 dataviz 参考调色板前两个槽位（蓝 #2a78d6、橙 #eb6834），已用调色板校验脚本验证。
 
 | 文件 | 报告中的编号 | 内容 | 数据来源 |
 |---|---|---|---|

@@ -2,38 +2,29 @@
 <style>
 :root{--keep:#2a78d6;--new:#eb6834;--obj:#1baf7a;--down:#6250d6;--txt:#0b0b0b;--txt2:#52514e;--line:#8a8983}
 body{margin:0;background:#fff;font-family:"WenQuanYi Zen Hei",sans-serif;color:var(--txt)}
-#fig{position:relative;width:1500px;height:540px;background:#fff}
+#fig{position:relative;width:1500px;height:470px;background:#fff}
 .t{position:absolute;left:24px;top:14px;font-size:22px;font-weight:bold}
 .st{position:absolute;left:24px;top:46px;font-size:13.5px;color:var(--txt2)}
 .lane{position:absolute;left:24px;width:1452px;border-radius:10px;box-sizing:border-box}
 .lt{position:absolute;left:40px;font-size:15px;font-weight:bold}
-.box{position:absolute;border:2px solid var(--line);border-radius:8px;background:#fff;padding:8px 10px;font-size:13px;line-height:1.42;box-sizing:border-box}
+.box{position:absolute;border:2px solid var(--line);border-radius:8px;background:#fff;padding:8px 10px;font-size:14px;line-height:1.5;box-sizing:border-box}
 .box b{font-size:14px}.small{font-size:12px;color:var(--txt2)}
 svg{position:absolute;left:0;top:0}
 </style></head><body><div id="fig">
 <div class="t">两阶段研究流程：复赛回答问题，决赛按答案设计</div>
-<div class="st">复赛基于 REVE 公开权重（MIT 许可）；决赛按规则不加载任何权重，在官方 21 个 OpenNeuro 数据集上从零预训练</div>
-<div class="lane" style="top:80px;height:212px;background:#f4f8fe;border:1.5px solid #c9dcf5"></div>
-<div class="lt" style="top:90px;color:var(--keep)">复赛（约 11/23–12/6）</div>
-<div class="box" style="left:44px;top:122px;width:330px;height:152px;border-color:var(--keep)"><b>第 0 步　诊断（RQ1，不训练）</b><br>① 层 × 频段 × 尺度的可恢复性图<br>　（用描述子探测冻结的 REVE）<br>② 读出瓶颈：线性 / PCA / 多项式 / MLP<br>③ REVE 官方流程基线：14 数据集 × 3 种子</div>
-<div class="box" style="left:414px;top:122px;width:350px;height:152px;border-color:var(--new);border-style:dashed"><b>第 1 步　继续预训练（RQ2）</b><br>数据：下游训练集被试，不用标签<br>　<span class="small">验证 / 测试被试不进入；必要时按种子分别训练</span><br>阶段 1：冻结编码器，热身新增模块<br>阶段 2：解冻，按层衰减学习率；<br>　每 batch 随机抽 patch 长度组合</div>
-<div class="box" style="left:804px;top:122px;width:300px;height:152px;border-color:var(--down)"><b>第 2 步　下游适配</b><br>任务门控 + 分类头<br>先冻结训练门控与头，再全量微调 / LoRA<br>读出方式、patch 组合按验证集 BACC 选<br>3 个种子，报告 BACC 等 4 项指标</div>
-<div class="box" style="left:1144px;top:122px;width:316px;height:152px;border-color:var(--obj)"><b>消融与可解释性（RQ2、RQ3）</b><br>A1 只用原目标继续预训练（关键对照）<br>A2 全锚定　A3 全自由　A4 无正交<br>A5–A7 patch 与跨尺度注意力<br>A8 门控　A9 防遗忘方式<br>带限扰动、自由子空间探测、门控权重</div>
-<div class="lane" style="top:310px;height:214px;background:#fdf6f2;border:1.5px solid #f3d3c4"></div>
-<div class="lt" style="top:320px;color:#c4521f">由复赛结果决定决赛设计</div>
-<div class="box" style="left:44px;top:352px;width:720px;height:156px;border-color:var(--new)">
-<b>判读规则（见 5.3）</b><br>
-· 锚定子空间稳定有效、自由子空间贡献小 → 决赛提高锚定比例（数据更少，先验更有价值）<br>
-· 自由子空间有贡献且不能被已知描述子解释 → 保留较大自由子空间，作为“超出先验”的证据<br>
-· 跨尺度注意力只对短时任务有效 → 决赛只为这些输入长度启用短 patch<br>
-· 瓶颈主要在读出 → 决赛侧重门控与读出层选择<br>
-· 完整方法 ≈ A1 → 收益来自领域适应，决赛退回更简单的方案</div>
-<div class="box" style="left:804px;top:352px;width:656px;height:156px;border-color:#c4521f">
-<b>决赛（约 12/14–27）：从零预训练</b><br>
-语料：官方 21 个 OpenNeuro 数据集，32/64/76/128 通道，200 Hz，已与下游被试隔离<br>
-模型：REVE 式编码器（坐标式 4D 位置编码、块状掩码），规模在 Small 12M 与 Base 69M 之间按算力选择<br>
-目标：锚定 / 自由子空间比例与各损失权重取自复赛；𝓛<sub>keep</sub> 换为 L1 波形重建<br>
-适配：与复赛相同的任务门控与两段式微调</div>
-<svg width="1500" height="540"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a8983"/></marker></defs>
-<g stroke="#8a8983" stroke-width="2" fill="none" marker-end="url(#a)"><path d="M374,198 L412,198"/><path d="M764,198 L802,198"/><path d="M1104,198 L1142,198"/><path d="M1300,274 L1300,318 L404,318 L404,350"/><path d="M764,430 L802,430"/></g></svg>
+
+<div class="lane" style="top:66px;height:176px;background:#f4f8fe;border:1.5px solid #c9dcf5"></div>
+<div class="lt" style="top:74px;color:var(--keep)">复赛（约 11/23–12/6）</div>
+<div class="box" style="left:44px;top:104px;width:330px;height:118px;border-color:var(--keep)"><b>第 0 步　诊断</b><br>可恢复性图（层 × 频段 × 尺度）<br>读出瓶颈对照<br>REVE 基线</div>
+<div class="box" style="left:414px;top:104px;width:350px;height:118px;border-color:var(--new);border-style:dashed"><b>第 1 步　继续预训练</b><br>下游训练集被试，无标签<br>热身新模块 → 解冻</div>
+<div class="box" style="left:804px;top:104px;width:300px;height:118px;border-color:var(--down)"><b>第 2 步　下游适配</b><br>任务门控 + 分类头<br>验证集 BACC 选择</div>
+<div class="box" style="left:1144px;top:104px;width:316px;height:118px;border-color:var(--obj)"><b>消融与可解释性</b><br>A1 只继续预训练（关键对照）<br>A2–A9 逐项去掉<br>带限扰动 · 门控权重</div>
+<div class="lane" style="top:260px;height:190px;background:#fdf6f2;border:1.5px solid #f3d3c4"></div>
+<div class="lt" style="top:268px;color:#c4521f">由复赛结果决定决赛设计</div>
+<div class="box" style="left:44px;top:298px;width:720px;height:136px;border-color:var(--new)">
+<b>判读规则</b><br>锚定有效 → 提高锚定比例<br>自由有效 → 保留自由子空间<br>跨尺度只对短时任务有效 → 只在这些任务启用<br>完整方法 ≈ A1 → 退回简单方案</div>
+<div class="box" style="left:804px;top:298px;width:656px;height:136px;border-color:#c4521f">
+<b>决赛（约 12/14–27）：从零预训练</b><br>官方 21 个 OpenNeuro 数据集<br>REVE 式编码器 + 复赛定下的子空间比例<br>𝓛<sub>keep</sub> → L1 波形重建</div>
+<svg width="1500" height="470"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#8a8983"/></marker></defs>
+<g stroke="#8a8983" stroke-width="2" fill="none" marker-end="url(#a)"><path d="M374,163 L412,163"/><path d="M764,163 L802,163"/><path d="M1104,163 L1142,163"/><path d="M1300,222 L1300,266 L404,266 L404,296"/><path d="M764,366 L802,366"/></g></svg>
 </div></body></html>
