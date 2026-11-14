@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="360" viewBox="0 0 760 360"><rect width="100%" height="100%" fill="#ffffff"/><rect x="20.0" y="14.0" width="10.0" height="10.0" rx="2" fill="#2a78d6"/>
+<text x="36.0" y="23.0" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">线性探测 LP</text>
+<rect x="125.0" y="14.0" width="10.0" height="10.0" rx="2" fill="#eb6834"/>
+<text x="141.0" y="23.0" font-size="11" fill="#52514e" text-anchor="start" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">全量微调 FT</text>
+<line x1="130.0" y1="40.0" x2="130.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="130.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">0</text>
+<line x1="270.0" y1="40.0" x2="270.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="270.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">20</text>
+<line x1="410.0" y1="40.0" x2="410.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="410.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">40</text>
+<line x1="550.0" y1="40.0" x2="550.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="550.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">60</text>
+<line x1="690.0" y1="40.0" x2="690.0" y2="316.0" stroke="#e6e5e1" stroke-width="1"/>
+<text x="690.0" y="331.0" font-size="10" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">80</text>
+<text x="410.0" y="348.0" font-size="10.5" fill="#52514e" text-anchor="middle" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">平衡准确率（%）</text>
+<text x="120.0" y="62.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">REVE</text>
+<rect x="130.0" y="50.0" width="39.2" height="9.0" rx="2" fill="#2a78d6"/>
+<text x="174.2" y="58.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">5.6</text>
+<rect x="130.0" y="61.0" width="471.8" height="9.0" rx="2" fill="#eb6834"/>
+<text x="606.8" y="69.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">67.4</text>
+<text x="120.0" y="92.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">CBraMod</text>
+<rect x="130.0" y="80.0" width="297.5" height="9.0" rx="2" fill="#2a78d6"/>
+<text x="432.5" y="88.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">42.5</text>
+<rect x="130.0" y="91.0" width="474.6" height="9.0" rx="2" fill="#eb6834"/>
+<text x="609.6" y="99.5" font-size="10" fill="#52514e" text-anchor="start" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">67.8</text>
+<text x="120.0" y="122.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">LaBraM</text>
+<rect x="130.0" y="110.0" width="23.1" height="9.0" rx="2" fill="#2a78d6"/>
+<rect x="130.0" y="121.0" width="490.7" height="9.0" rx="2" fill="#eb6834"/>
+<text x="120.0" y="152.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">NeuroGPT</text>
+<rect x="130.0" y="140.0" width="18.2" height="9.0" rx="2" fill="#2a78d6"/>
+<rect x="130.0" y="151.0" width="431.9" height="9.0" rx="2" fill="#eb6834"/>
+<text x="120.0" y="182.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">BrainOmni</text>
+<rect x="130.0" y="170.0" width="54.6" height="9.0" rx="2" fill="#2a78d6"/>
+<rect x="130.0" y="181.0" width="187.6" height="9.0" rx="2" fill="#eb6834"/>
+<text x="120.0" y="212.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">BIOT</text>
+<rect x="130.0" y="200.0" width="45.5" height="9.0" rx="2" fill="#2a78d6"/>
+<rect x="130.0" y="211.0" width="217.0" height="9.0" rx="2" fill="#eb6834"/>
+<text x="120.0" y="242.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">NeuroLM</text>
+<rect x="130.0" y="230.0" width="22.4" height="9.0" rx="2" fill="#2a78d6"/>
+<rect x="130.0" y="241.0" width="238.0" height="9.0" rx="2" fill="#eb6834"/>
+<text x="120.0" y="272.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">EEGNet</text>
+<rect x="130.0" y="271.0" width="43.4" height="9.0" rx="2" fill="#eb6834"/>
+<text x="120.0" y="302.0" font-size="11" fill="#0b0b0b" text-anchor="end" font-weight="normal" font-family="Inter, WenQuanYi Zen Hei, sans-serif">EEG Conformer</text>
+<rect x="130.0" y="301.0" width="25.2" height="9.0" rx="2" fill="#eb6834"/></svg>

@@ -1,0 +1,30 @@
+<!doctype html><html><head><meta charset="utf-8"><title>两阶段流程</title>
+<style>
+:root{--keep:#2a78d6;--new:#eb6834;--obj:#1baf7a;--down:#6250d6;--txt:#0b0b0b;--txt2:#52514e;--line:#8a8983}
+body{margin:0;background:#fff;font-family:"Inter","WenQuanYi Zen Hei",sans-serif;color:var(--txt)}
+#fig{position:relative;width:1500px;height:420px;background:#fff}
+.t{position:absolute;left:24px;top:-32px;font-size:22px;font-weight:bold}
+.st{position:absolute;left:24px;top:0px;font-size:13.5px;color:var(--txt2)}
+.lane{position:absolute;left:24px;width:1452px;border-radius:10px;box-sizing:border-box}
+.lt{position:absolute;left:40px;font-size:13.5px;font-weight:600}
+.box{position:absolute;border:1.25px solid #b9b8b2;border-radius:6px;background:#fff;padding:8px 10px;font-size:14px;line-height:1.5;box-sizing:border-box}
+.box b{font-size:14px}.small{font-size:12px;color:var(--txt2)}
+svg{position:absolute;left:0;top:0}
+</style></head><body><div id="fig">
+
+
+<div class="lane" style="top:20px;height:176px;background:#f4f8fe;border:1px solid #d6e3f5"></div>
+<div class="lt" style="top:28px;color:var(--keep)">复赛（约 11/23–12/6）</div>
+<div class="box" style="left:44px;top:58px;width:330px;height:118px;border-color:var(--keep);background:#eef4fc"><b>第 0 步　诊断</b><br>可恢复性图（层 × 频段 × 尺度）<br>读出瓶颈对照<br>REVE 基线</div>
+<div class="box" style="left:414px;top:58px;width:350px;height:118px;border-color:var(--new);border-style:dashed;background:#fdf1ea"><b>第 1 步　继续预训练</b><br>下游训练集被试，无标签<br>热身新模块 → 解冻</div>
+<div class="box" style="left:804px;top:58px;width:300px;height:118px;border-color:var(--down);background:#f1effc"><b>第 2 步　下游适配</b><br>任务门控 + 分类头<br>验证集 BACC 选择</div>
+<div class="box" style="left:1144px;top:58px;width:316px;height:118px;border-color:var(--obj);background:#e9f7f0"><b>消融与可解释性</b><br>A1 只继续预训练（关键对照）<br>A2–A9 逐项去掉<br>带限扰动 · 门控权重</div>
+<div class="lane" style="top:214px;height:190px;background:#fdf6f2;border:1px solid #f1dccf"></div>
+<div class="lt" style="top:222px;color:#c4521f">由复赛结果决定决赛设计</div>
+<div class="box" style="left:44px;top:252px;width:720px;height:136px;border-color:var(--new);background:#fdf1ea">
+<b>判读规则</b><br>锚定有效 → 提高锚定比例<br>自由有效 → 保留自由子空间<br>跨尺度只对短时任务有效 → 只在这些任务启用<br>完整方法 ≈ A1 → 退回简单方案</div>
+<div class="box" style="left:804px;top:252px;width:656px;height:136px;border-color:#c4521f;background:#fff7f2">
+<b>决赛（约 12/14–27）：从零预训练</b><br>官方 21 个 OpenNeuro 数据集<br>REVE 式编码器 + 复赛定下的子空间比例<br>𝓛<sub>keep</sub> → L1 波形重建</div>
+<svg width="1500" height="420"><defs><marker id="a" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path d="M0,-46 L10,-41 L0,-36 z" fill="#6b6a65"/></marker></defs>
+<g stroke="#6b6a65" stroke-width="1.4" fill="none" marker-end="url(#a)"><path d="M374,117 L412,117"/><path d="M764,117 L802,117"/><path d="M1104,117 L1142,117"/><path d="M1300,176 L1300,220 L404,220 L404,250"/><path d="M764,320 L802,320"/></g></svg>
+</div></body></html>
