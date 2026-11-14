@@ -34,16 +34,21 @@
   #set par(justify: false)
   #text(size: 10pt, fill: accent, tracking: 0.5pt, weight: "bold")[OMNIEEG CHALLENGE 2026 · 主赛道初赛研究方案]
   #v(12mm)
-  #text(size: 18pt, weight: "bold", fill: accent)[先诊断，后改进：面向跨任务 EEG 基础模型的 \ 频段正交子空间预测学习]
+  #text(size: 18pt, weight: "bold", fill: accent)[面向跨任务 EEG 基础模型的 \ 频段正交子空间预测学习]
   #v(5mm)
-  #text(size: 10.5pt, style: "italic", fill: accent)[Diagnose First, Improve Next: Frequency-Orthogonal Subspace Predictive \ Learning for Cross-Task EEG Foundation Models]
+  #text(size: 10.5pt, style: "italic", fill: accent)[Frequency-Orthogonal Subspace Predictive \ Learning for Cross-Task EEG Foundation Models]
   #v(10mm)
   #line(length: 60%, stroke: 0.5pt + accent)
   #v(4mm)
-  #text(size: 10pt, fill: rgb("#cc0000"))[队伍名称：]#text(fill: accent)[\[填写队伍名称\]] #h(1.5em)
-  #text(size: 10pt, fill: rgb("#cc0000"))[参赛成员：]#text(fill: accent)[\[填写成员姓名\]] \
-  #v(2mm)
-  #text(size: 10pt)[提交日期：2026 年 11 月]
+  #grid(
+    columns: (auto, auto),
+    column-gutter: 1em,
+    row-gutter: 0.8em,
+    align: (right, left),
+    text(fill: accent, weight: "bold")[队伍], [Oracula],
+    text(fill: accent, weight: "bold")[队员], [汪士楠（队长） #h(0.6em) 仇心妍 #h(0.6em) 吴牧希],
+    text(fill: accent, weight: "bold")[提交日期], [2026 年 11 月 16 日],
+  )
 ]
 
 #v(8mm)
