@@ -135,7 +135,12 @@
 ]
 
 #par(first-line-indent: 0em)[*(2) 冻结表征普遍偏弱，低频偏置与读出混叠并存：*]
-现有基础模型高度依赖下游全量微调，冻结表征的线性可分性较差（如 LaBraM 在 TUEV 上线性探测仅为 0.346，全量微调升至 0.641；CBraMod 冻结后在 PhysioNet-MI 上仅为 0.385；BrainOmni~\[8\] 冻结后在 TUEV 上由 0.618 降至 0.489）。FAME~\[11\] 从机理上揭示了低频偏置（Low-Frequency Bias）：由于 $1 slash f$ 谱特性，原始时域 MSE 重建损失按信号功率加权，导致编码器优先拟合低频慢波而丢失高频细节。另一方面，下游性能受限未必全因表征缺失——REVE 同一冻结编码器仅将读出方式由"全 Token 展平"切换为"全局池化"，在 Faced 上即提升 18.2%，在 BCIC2020-3 上提升 15.6%，而在 TUEV 上却下降 8.4%（REVE Table 4）；FAME 的最佳探测层亦位于第 9 层而非末层。这表明表征瓶颈与读出瓶颈长期被混为一谈。此外，Neuro-KE~\[15\] 证明，将无需人工标注的 EEG 描述子转化为掩码预训练数值目标，平均提升 BACC 2.60 个百分点，印证了结构化领域先验的有效性。
+现有基础模型高度依赖下游全量微调，冻结表征的线性可分性较差（如 LaBraM 在 TUEV 上线性探测仅为 0.346，全量微调升至 0.641；CBraMod 冻结后在 PhysioNet-MI 上仅为 0.385；BrainOmni~\[8\] 冻结后在 TUEV 上由 0.618 降至 0.489）。FAME~\[11\] 从机理上揭示了低频偏置（Low-Frequency Bias）：由于 $1 slash f$ 谱特性，原始时域 MSE 重建损失按信号功率加权，导致编码器优先拟合低频慢波而丢失高频细节。另一方面，下游性能受限未必全因表征缺失——REVE 同一冻结编码器仅将读出方式由"全 Token 展平"切换为"全局池化"，在 Faced 上即提升 18.2%，在 BCIC2020-3 上提升 15.6%，而在 TUEV 上却下降 8.4%（REVE Table 4）；FAME 的最佳探测层亦位于第 9 层而非末层。这表明表征瓶颈与读出瓶颈长期被混为一谈（图~#ref(<fig:readout>, supplement: none)）。此外，Neuro-KE~\[15\] 证明，将无需人工标注的 EEG 描述子转化为掩码预训练数值目标，平均提升 BACC 2.60 个百分点，印证了结构化领域先验的有效性。
+
+#figure(
+  image("figures/fig_reve_readout.png", width: 62%),
+  caption: [REVE-Base 同一冻结表示仅更换读出方式时的平衡准确率差异（"不池化 − 池化"，只标注差值 ≥ 5 的任务；数据：REVE Table 4）。],
+) <fig:readout>
 
 #par(first-line-indent: 0em)[*(3) 跨被试与连续回归泛化验证不充分：*]
 同一 EEG Conformer~\[2\] 在 BCI IV-2a 上被试内准确率 78.7%，跨被试骤降至 47.0%。在 AdaBrain-Bench~\[20\] 的跨被试连续回归任务 SEED-VIG 中，多数基础模型甚至未能超越从零训练的轻量级 EEGNet（见表~#ref(<tab:seedvig>, supplement: none)）。在零样本跨被试方面，UniMind~\[13\] 明确声明未考察对完全未见被试的泛化，而 ECHO~\[14\] 的上下文学习则需在推理阶段引入测试被试本人的带标签支持样本。
@@ -159,7 +164,20 @@
 ]
 
 #par(first-line-indent: 0em)[*(4) 跨文献评测协议失准，公开分数不可直接横向比较：*]
-不同论文在被试划分方式、上下文窗口长度、微调学习率策略、早停验证集选取及额外导联先验等条件上存在不可比偏差，本方案规定：公开文献分数仅用于提出科学假设，所有关于"方法优劣与模块有效性"的最终判据，均严格以 OmniEEG 统一协议下的受控对照实验为准。
+同一模型的分数随评测协议剧烈变化：被试内与跨被试划分可相差约 30 个百分点；EEGPT 的"线性探测"实际包含可训练卷积层；EEG Conformer 公开代码直接在测试集上选模型；CBraMod 在不同论文中的数值不一致。适配方式的影响同样巨大——REVE 在 OmniEEG-Bench~\[18\] 的 SSVEP 任务上线性探测仅 5.6%，全量微调为 67.4%，而在 NeuralBench 全量微调协议下高达 96.1%（图~#ref(<fig:ssvep>, supplement: none)）。此外，运动想象等瞬时状态解码中，逐窗口独立预测容易出现标签"闪动"，平衡准确率反映不出这类时序稳定性缺陷。
+
+#grid(
+  columns: (1fr, 1fr),
+  gutter: 8pt,
+  [#figure(
+    image("figures/fig_reve_ssvep_protocols.png", width: 100%),
+    caption: [同一个 REVE 在不同评测协议下的 SSVEP 平衡准确率（数据：OmniEEG-Bench、FAME、NeuralBench；仅说明协议影响，不作排行）。],
+  ) <fig:ssvep>],
+  figure(
+    image("figures/fig_omnieeg_ssvep_lp_ft.png", width: 100%),
+    caption: [OmniEEG-Bench SSVEP 数据集上线性探测与全量微调的对比。],
+  ),
+)
 
 == 研究切入点：三层递进诊断范式 <sec:rq-preview>
 
@@ -342,7 +360,7 @@ EEGNet~\[1\] 通过时间卷积与深度可分离空间卷积实现"时频滤波
 
 == 为什么不直接采信公开榜单分数
 
-由于各文献在被试划分方式、上下文窗口长度、微调学习率策略、早停验证集选取及额外导联先验等六类条件上存在不可比偏差，本方案规定：公开文献分数仅用于提出科学假设，所有关于"方法优劣与模块有效性"的最终判据，均严格以 OmniEEG 统一协议下的受控对照实验为准。
+如 1.3 节第 (4) 点所示，各文献在被试划分、上下文窗口长度、适配方式、模型选择规则、复现差异与额外导联先验六类条件上互不可比。因此本方案规定：公开文献分数仅用于提出科学假设，所有关于"方法优劣与模块有效性"的最终判据，均严格以 OmniEEG 统一协议下的受控对照实验为准。
 
 // ══════════════════════════════════════════════
 // 4  研究见解与研究问题
@@ -423,7 +441,7 @@ $ cal(L) = underbrace(sum_(k in "band") cal(L)_"desc"^((k)), "锚定") + lambda_
   caption: [两阶段研究流程：复赛回答 RQ1–RQ3，决赛按结果设计。],
 ) <fig:pipeline>
 
-*决赛阶段（严格从零预训练）：* 严格遵守决赛禁用外部预训练权重的规则，将复赛消融实验锁定的最优预训练目标组合、锚定/自由子空间维度配比以及有效尺度配置迁移至官方 21 个 OpenNeuro 预训练数据集上从零训练 REVE 式编码器，并将复赛中用于防遗忘的教师蒸馏损失 $cal(L)_"keep"$ 替换为面向原始信号的 L1 波形重建损失，以建立完整的底层时域建模能力。
+*决赛阶段（严格从零预训练）：* 严格遵守决赛禁用外部预训练权重的规则，将复赛消融实验锁定的最优预训练目标组合、锚定/自由子空间维度配比以及有效尺度配置迁移至官方 21 个 OpenNeuro 预训练数据集上从零训练 REVE 式编码器，并将复赛中用于防遗忘的教师蒸馏损失 $cal(L)_"keep"$ 替换为面向原始信号的 L1 波形重建损失，以建立完整的底层时域建模能力。决赛中所有参数（含编码器、子空间投影、跨尺度模块及自由子空间的 EMA 教师）均从随机初始化开始训练，EMA 教师由学生网络的指数滑动平均同步生成，不加载任何公开或私有预训练权重。
 
 == 设计依据与取舍
 
@@ -495,24 +513,31 @@ $ cal(L) = underbrace(sum_(k in "band") cal(L)_"desc"^((k)), "锚定") + lambda_
 // 7  算力需求
 // ══════════════════════════════════════════════
 
+= 结果分析 <sec:results>
+
+暂无已完成实验结果。初赛阶段不开放训练数据，本方案的诊断、继续预训练与消融实验将在复赛开放 14 个下游数据集后按第 6 节计划执行。
+
 = 算力需求估算与合规复现说明 <sec:compute>
 
 #block[
   #set text(size: 8pt)
   #set par(justify: false)
   #figure(table(
-    columns: (1.2fr, 2fr, 2fr),
+    columns: (1.1fr, 1.7fr, 1.1fr, 1.9fr),
     inset: 4pt, stroke: none, align: left,
     table.hline(stroke: 0.8pt),
-    table.header([*赛程阶段*], [*核心计算任务*], [*算力与时间复杂度估算*]),
+    table.header([*赛程阶段*], [*核心计算任务*], [*运行次数*], [*算力与时长估算*]),
     table.hline(stroke: 0.5pt),
-    [复赛第 0 步（诊断）], [冻结 REVE 各层表征提取、线性探测与读出对照], [仅前向推理与轻量回归，约数十 GPU 小时],
-    [复赛第 1 步（继续预训练）], [14 个数据集训练集无标签继续预训练（3 种子）], [REVE-Base 全量预训练约需 260 A100h，继续预训练步数远小于此],
-    [复赛第 2 步（下游适配）], [14 数据集 $times$ 3 种子 $times$ 约 15 组配置], [单次微调耗时轻量，可通过多卡并行高效完成],
-    [决赛（从零预训练）], [官方 21 个 OpenNeuro 数据集从零预训练 + 全量评测], [依据复赛精简后的最优结构，匹配官方算力配额动态缩放],
+    [复赛第 0 步（诊断）], [冻结 REVE 各层表征提取、线性探测与读出对照], [14 数据集 $times$ 3 种子], [以前向推理与轻量回归为主，约数十 GPU 小时],
+    [复赛第 1 步（继续预训练）], [训练集被试无标签继续预训练：完整方法及 A1–A7、A9 变体], [约 9 个预训练配置], [REVE-Base 完整预训练约 260 A100 小时，继续预训练步数远小于此；单次时长待短测确认],
+    [复赛第 2 步（下游适配）], [各配置在 14 数据集 $times$ 3 种子上微调], [约 15 配置 $times$ 42 = 630 次], [单次微调为分钟至小时级，可多卡并行；待短测确认],
+    [决赛（从零预训练）], [官方 21 个 OpenNeuro 数据集从零预训练 + 42 次评测], [1 次预训练 + 42 次微调], [按复赛锁定结构与官方算力配额缩放模型规模],
     table.hline(stroke: 0.8pt),
-  ), caption: [复赛与决赛各阶段算力需求预估（具体卡型与配额待官方进一步公布）。]) <tab:compute>
+  ), caption: [复赛与决赛各阶段算力需求预估。]) <tab:compute>
 ]
+
+#par(first-line-indent: 0em)[*硬件与存储假设：*]
+以单卡 80 GB 显存的 A100 级 GPU 作为估算单位，复赛预计使用 4–8 卡并行，实际卡型、卡数与时限以官方资源池配额为准。存储需求主要包括三部分：REVE-Base 权重（约 69M 参数，单个 fp32 检查点约 280 MB）及各配置保留的最优检查点（约 630 个，合计约 180 GB，可只保留最优种子以压缩）；按训练集被试预计算的频段描述子缓存；以及日志与评测结果。描述子缓存规模取决于官方数据量，待数据公布后确认。
 
 *数据合规与防泄露承诺：*复赛阶段仅使用官方指定的 14 个下游数据集及 MIT 许可的 REVE 公开权重，决赛阶段仅使用官方提供的 21 个预训练数据集，绝不引入任何私有或外部未授权语料。继续预训练与描述子归一化统计量严格限定在各数据集的训练集被试内部计算，验证集与测试集被试在微调测试前保持完全物理隔离。所有随机种子、超参数配置、早停规则与代码修改均基于 REVE 官方开源仓库构建，确保实验全流程 100% 可复现并随赛程完整提交。
 
@@ -528,21 +553,21 @@ $ cal(L) = underbrace(sum_(k in "band") cal(L)_"desc"^((k)), "锚定") + lambda_
 + Lawhern, V. J., Solon, A. J., Waytowich, N. R., Gordon, S. M., Hung, C. P., & Lance, B. J. (2018). EEGNet: A compact convolutional neural network for EEG-based brain–computer interfaces. _Journal of Neural Engineering_, 15(5), 056013.
 + Song, Y., Zheng, Q., Liu, B., & Gao, X. (2023). EEG Conformer: Convolutional Transformer for EEG decoding and visualization. _IEEE Transactions on Neural Systems and Rehabilitation Engineering_, 31, 710–719.
 + Kostas, D., Aroca-Ouellette, S., & Rudzicz, F. (2021). BENDR: Using Transformers and a contrastive self-supervised learning task to learn from massive amounts of EEG data. _Frontiers in Human Neuroscience_, 15, 653659.
-+ Yang, C., Westover, M. B., & Sun, J. (2023). BIOT: Biosignal Transformer for cross-data biosignal learning in the wild. In _Advances in Neural Information Processing Systems (NeurIPS)_, 36.
-+ Jiang, W. B., Zhao, L. M., & Lu, B. L. (2024). Large Brain Model for learning generic representations with tremendous EEG data in BCI. In _International Conference on Learning Representations (ICLR)_.
-+ Wang, G., Liu, W., He, Y., Xu, C., Ma, L., & Li, H. (2024). EEGPT: Pretrained Transformer for universal and reliable representation of EEG signals. In _Advances in Neural Information Processing Systems (NeurIPS)_, 37.
-+ Wei, Z., et al. (2025). CBraMod: A Criss-Cross Brain Foundation Model for EEG decoding. In _International Conference on Learning Representations (ICLR)_.
-+ BrainOmni: A Foundation Model for Any-to-Any Brain Signal Conversion. (2025).
-+ CSBrain: Cross-Scale Brain Transformer for Universal EEG Decoding. (2025).
-+ El Ouayas, A., et al. (2025). REVE: A Foundation Model for EEG Representation Learning across Arbitrary Electrode Layouts.
-+ FAME: Understanding and Correcting Low-Frequency Bias in EEG Representation Learning. (2026).
-+ NeuroLM: A Universal Multi-task Foundation Model for Bridging Language and EEG. (2025).
-+ UniMind: Unified Multi-task Brain Decoding with Multi-level Alignment. (2025).
-+ ECHO: EEG Channel-wise Hypernetwork Organization for In-context Learning. (2025).
-+ Chen, Y., et al. (2026). Neuro-KE: Knowledge-Guided Interfaces for EEG Foundation Models. In _Advances in Neural Information Processing Systems (NeurIPS)_.
-+ JEPA-Anything: Orthogonal Predictive Factorization for Joint-Embedding Predictive Architectures. (2025).
-+ H-JEPA: Hierarchical World Model for Multi-Scale Time Series Prediction. (2025).
-+ OmniEEG-Bench: A Comprehensive Multi-Paradigm Benchmark for EEG Foundation Models. (2026).
-+ NeuralBench: A Unified Multi-task Benchmark for Neural Signal Decoding. (2025).
-+ AdaBrain-Bench: Adaptive Evaluation Framework for Cross-Subject EEG BCIs. (2025).
++ Yang, C., Westover, M. B., & Sun, J. (2023). BIOT: Cross-data biosignal learning in the wild. In _Advances in Neural Information Processing Systems (NeurIPS)_, 36. arXiv:2305.10351.
++ Jiang, W.-B., Zhao, L.-M., & Lu, B.-L. (2024). Large brain model for learning generic representations with tremendous EEG data in BCI. In _International Conference on Learning Representations (ICLR)_. arXiv:2405.18765.
++ Wang, G., et al. (2024). EEGPT: Pretrained Transformer for universal and reliable representation of EEG signals. In _Advances in Neural Information Processing Systems (NeurIPS)_, 37.
++ Wang, J., et al. (2025). CBraMod: A criss-cross brain foundation model for EEG decoding. In _International Conference on Learning Representations (ICLR)_. arXiv:2412.07236.
++ Xiao, Q., et al. (2025). BrainOmni: A brain foundation model for unified EEG and MEG signals. arXiv:2505.18185.
++ Zhou, Y., et al. (2025). CSBrain: A cross-scale spatiotemporal brain foundation model for EEG decoding. arXiv:2506.23075.
++ El Ouahidi, Y., et al. (2025). REVE: A foundation model for EEG adapting to any setup with large-scale pretraining on 25,000 subjects. arXiv:2510.21585.
++ Yu, J., et al. (2026). Understanding and correcting low-frequency bias in EEG foundation model (FAME). arXiv:2608.01898.
++ Jiang, W.-B., et al. (2025). NeuroLM: A universal multi-task foundation model for bridging the gap between language and EEG signals. In _International Conference on Learning Representations (ICLR)_. arXiv:2409.00101.
++ Lu, W., et al. (2025). UniMind: Unleashing the power of LLMs for unified multi-task brain decoding. arXiv:2506.18962.
++ Liu, C., et al. (2025). ECHO: Toward contextual Seq2Seq paradigms in large EEG models. arXiv:2509.22556.
++ Chen, Y., et al. (2026). Neuro-KE: Knowledge-guided interfaces for semantically grounded EEG foundation models. In _Advances in Neural Information Processing Systems (NeurIPS)_.
++ JEPA-Anything (2026). arXiv:2609.20800.
++ H-JEPA (2026). arXiv:2610.06805.
++ Lu, Z., et al. (2026). OmniEEG-Bench: A standardized evaluation benchmark for EEG foundation models. arXiv:2606.00815.
++ Banville, H., et al. (2026). NeuralBench: A unifying framework to benchmark NeuroAI models. arXiv:2605.08495.
++ Wu, J., et al. (2025). AdaBrain-Bench: Benchmarking brain foundation models for brain-computer interface applications. arXiv:2507.09882.
 + Alayrac, J. B., et al. (2022). Flamingo: A visual language model for few-shot learning. In _Advances in Neural Information Processing Systems (NeurIPS)_, 35, 23716–23736.
