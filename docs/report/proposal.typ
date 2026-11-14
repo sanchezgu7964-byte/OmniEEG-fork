@@ -2,12 +2,12 @@
 // 编译：python3 -c "import typst; typst.compile('docs/report/proposal.typ', output='docs/report/proposal.pdf')"
 
 #set page(paper: "a4", margin: (x: 23mm, top: 23mm, bottom: 22mm))
-#set text(font: ("Libertinus Serif", "Noto Serif CJK SC"), size: 10pt)
+#set text(font: ("Noto Serif CJK SC",), size: 10pt, lang: "zh", region: "cn")
 #set par(justify: true, leading: 0.55em, first-line-indent: 1.2em)
 #set heading(numbering: "1.1")
 #set math.equation(numbering: "(1)")
-#show heading.where(level: 1): set text(size: 12pt)
-#show heading.where(level: 2): set text(size: 10.5pt)
+#show heading.where(level: 1): set text(size: 12pt, weight: "bold")
+#show heading.where(level: 2): set text(size: 10.5pt, weight: "bold")
 #show figure.caption: set text(size: 8pt)
 #show figure.where(kind: table): set figure.caption(position: top)
 #set figure(gap: 5pt)
