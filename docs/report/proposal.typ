@@ -46,8 +46,8 @@
     row-gutter: 0.8em,
     align: (right, left),
     text(fill: accent, weight: "bold")[队伍], [Oracula],
-    text(fill: accent, weight: "bold")[队员], [汪士楠（队长） #h(0.6em) 仇心妍 #h(0.6em) 吴牧希],
-    text(fill: accent, weight: "bold")[提交日期], [2026 年 11 月 16 日],
+    text(fill: accent, weight: "bold")[队员], [汪士楠 #h(0.6em) 仇心妍 #h(0.6em) 吴牧希],
+    text(fill: accent, weight: "bold")[提交日期], [2026 年 11 月 15 日],
   )
 ]
 
